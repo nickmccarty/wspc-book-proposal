@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table of Contents — Agentic Harness Engineering</title>
+  <style>
+    :root {
+      --wspc-navy:      #1b2e5e;
+      --wspc-navy-dark: #122045;
+      --wspc-red:       #c0392b;
+      --wspc-gold:      #b8860b;
+      --wspc-link:      #1b5ea8;
+      --wspc-link-hover:#0f3d75;
+      --wspc-bg-alt:    #f7f8fc;
+      --text-primary:   #313131;
+      --text-secondary: #5a5a5a;
+      --border-default: #E5E7EB;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--wspc-link); text-decoration: none; }
+    a:hover { color: var(--wspc-link-hover); text-decoration: underline; }
+
+    /* Nav */
+    .util-bar { background: var(--wspc-navy-dark); color: rgba(255,255,255,0.7); font-size: 12px; }
+    .util-bar-inner { max-width: 1100px; margin: 0 auto; padding: 6px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .util-bar a { color: rgba(255,255,255,0.7); }
+    .util-bar-links { display: flex; gap: 20px; }
+    .site-nav { background: var(--wspc-navy); border-bottom: 3px solid var(--wspc-red); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 32px; height: 56px; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 24px; flex: 1; }
+    .nav-links a { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+    .breadcrumb { border-bottom: 1px solid var(--border-default); background: var(--wspc-bg-alt); }
+    .breadcrumb-inner { max-width: 1100px; margin: 0 auto; padding: 10px 24px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .breadcrumb-sep { color: #bbb; }
+
+    /* Page layout */
+    .page-wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* Eyebrow / heading */
+    .chapter-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wspc-red); margin-bottom: 10px; }
+    .chapter-heading { font-size: 30px; font-weight: 700; color: var(--wspc-navy); line-height: 1.2; margin-bottom: 6px; }
+    .chapter-sub { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px; }
+    .chapter-meta { font-size: 13px; color: var(--text-secondary); margin-bottom: 36px; padding-bottom: 20px; border-bottom: 2px solid var(--wspc-navy); display: flex; gap: 24px; flex-wrap: wrap; }
+
+    /* Jump nav */
+    .jump-nav { background: var(--wspc-bg-alt); border: 1px solid var(--border-default); border-radius: 6px; padding: 14px 18px; margin-bottom: 40px; }
+    .jump-nav-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 8px; }
+    .jump-nav-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .jump-nav-links a { font-size: 13px; font-weight: 500; color: var(--wspc-link); background: #fff; border: 1px solid var(--border-default); border-radius: 3px; padding: 3px 10px; white-space: nowrap; }
+    .jump-nav-links a:hover { background: var(--wspc-navy); color: #fff; border-color: var(--wspc-navy); text-decoration: none; }
+
+    /* Part headers */
+    .part-header { margin: 48px 0 4px; padding-bottom: 10px; border-bottom: 2px solid var(--wspc-navy); }
+    .part-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wspc-red); margin-bottom: 3px; }
+    .part-title { font-size: 22px; font-weight: 700; color: var(--wspc-navy); }
+    .part-pages { font-size: 13px; font-weight: 400; color: var(--text-secondary); margin-left: 6px; }
+    .part-desc { font-size: 14px; color: var(--text-secondary); font-style: italic; margin-top: 8px; line-height: 1.6; }
+
+    /* Section headers (Part II sections) */
+    .section-header { margin: 36px 0 16px; }
+    .section-id { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wspc-navy); background: #e8edf8; padding: 2px 8px; border-radius: 3px; margin-bottom: 4px; }
+    .section-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .section-pages { font-size: 13px; color: var(--text-secondary); }
+    .section-desc { font-size: 14px; color: var(--text-secondary); font-style: italic; margin-top: 6px; line-height: 1.6; }
+
+    /* Chapter entries (Part I) */
+    .chapter-entry { border: 1px solid var(--border-default); border-radius: 6px; margin-bottom: 14px; overflow: hidden; }
+    .chapter-entry-header { background: var(--wspc-bg-alt); padding: 14px 18px; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--border-default); }
+    .chapter-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wspc-red); white-space: nowrap; }
+    .chapter-name { font-size: 16px; font-weight: 700; color: var(--wspc-navy); flex: 1; }
+    .page-count { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .chapter-entry-body { padding: 14px 18px; font-size: 14.5px; line-height: 1.75; color: var(--text-primary); }
+
+    /* Pattern entries (Part II) */
+    .pattern-entry { border: 1px solid var(--border-default); border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+    .pattern-entry-summary {
+      background: var(--wspc-bg-alt);
+      padding: 13px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      list-style: none;
+      user-select: none;
+    }
+    .pattern-entry-summary::-webkit-details-marker { display: none; }
+    .pattern-entry-summary::marker { display: none; }
+    .pattern-badge { font-size: 11px; font-weight: 700; color: #fff; background: var(--wspc-navy); padding: 2px 8px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+    .pattern-summary-text { flex: 1; }
+    .pattern-entry-name { font-size: 15px; font-weight: 700; color: var(--wspc-navy); margin-bottom: 3px; }
+    .pattern-entry-intent { font-size: 13.5px; color: var(--text-primary); line-height: 1.55; }
+    .pattern-entry-aka { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+    .pattern-toggle { font-size: 12px; color: var(--wspc-link); white-space: nowrap; flex-shrink: 0; margin-top: 3px; align-self: flex-start; }
+    details[open] .pattern-toggle::after { content: ' ▲'; }
+    .pattern-toggle::after { content: ' ▼'; }
+    .pattern-entry-body { padding: 14px 18px; border-top: 1px solid var(--border-default); font-size: 14px; line-height: 1.75; color: var(--text-primary); }
+    .pattern-entry-body p { margin-bottom: 12px; }
+    .pattern-entry-body p:last-child { margin-bottom: 0; }
+    .pattern-entry-body strong { font-weight: 700; }
+
+    /* Preface block */
+    .preface-block { background: var(--wspc-bg-alt); border: 1px solid var(--border-default); border-left: 4px solid var(--wspc-navy); border-radius: 0 6px 6px 0; padding: 16px 20px; margin: 24px 0 36px; font-size: 14.5px; line-height: 1.75; color: var(--text-primary); }
+    .preface-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wspc-navy); margin-bottom: 6px; }
+
+    /* Pattern Index table */
+    .pattern-index { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    .pattern-index th { background: var(--wspc-navy); color: #fff; text-align: left; padding: 8px 14px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .pattern-index td { padding: 8px 14px; border-bottom: 1px solid var(--border-default); vertical-align: top; }
+    .pattern-index tr:last-child td { border-bottom: none; }
+    .pattern-index tr:hover td { background: var(--wspc-bg-alt); }
+    .idx-badge { font-size: 11px; font-weight: 700; color: var(--wspc-navy); background: #e8edf8; padding: 1px 7px; border-radius: 3px; }
+
+    /* Appendix entries */
+    .appendix-entry { border: 1px solid var(--border-default); border-radius: 6px; padding: 14px 18px; margin-bottom: 10px; }
+    .appendix-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wspc-red); margin-bottom: 4px; }
+    .appendix-title { font-size: 15px; font-weight: 700; color: var(--wspc-navy); margin-bottom: 6px; }
+    .appendix-body { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
+
+    /* Footer */
+    .chapter-footer { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--border-default); font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--wspc-link); margin-top: 28px; }
+    .back-link:hover { text-decoration: underline; }
+
+    /* Sample chapter call-out */
+    .sample-badge { font-size: 11px; font-weight: 700; color: var(--wspc-red); background: #fdecea; border: 1px solid #f5c6c0; border-radius: 3px; padding: 1px 7px; margin-left: 8px; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<div class="util-bar">
+  <div class="util-bar-inner">
+    <span>World Scientific Publishing Co. Pte. Ltd.</span>
+    <div class="util-bar-links">
+      <a href="#">My Account</a>
+      <a href="#">Librarians</a>
+      <a href="#">Authors</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img alt="World Scientific" src="https://www.worldscientific.com/pb-assets/releasedAssets/images/WSPC-LOGO-250-1541381839657.png" loading="eager" style="height:34px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="#">Books</a>
+      <a href="#">Journals</a>
+      <a href="#">Databases</a>
+      <a href="#">Computer Science</a>
+      <a href="#">AI &amp; Machine Learning</a>
+    </div>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="#">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#">Computer Science</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="index.html">Agentic Harness Engineering</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Table of Contents</span>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <div class="chapter-eyebrow">Free Preview · Table of Contents</div>
+  <h1 class="chapter-heading">Table of Contents</h1>
+  <div class="chapter-sub">Annotated chapter and pattern summaries</div>
+  <div class="chapter-meta">
+    <span>Agentic Harness Engineering</span>
+    <span>Nicholas McCarty</span>
+    <span>World Scientific, 2026</span>
+    <span>~455 pages · 27 patterns</span>
+  </div>
+
+  <!-- Jump nav -->
+  <div class="jump-nav">
+    <div class="jump-nav-label">Jump to section</div>
+    <div class="jump-nav-links">
+      <a href="#preface">Preface</a>
+      <a href="#part-i">Part I — Foundations</a>
+      <a href="#section-a">A · Inference</a>
+      <a href="#section-b">B · Context Engineering</a>
+      <a href="#section-c">C · Verification</a>
+      <a href="#section-d">D · Orchestration</a>
+      <a href="#section-e">E · Security</a>
+      <a href="#section-f">F · Observability</a>
+      <a href="#section-g">G · Self-Improvement</a>
+      <a href="#appendices">Appendices</a>
+      <a href="#pattern-index">Pattern Index</a>
+    </div>
+  </div>
+
+  <!-- Preface -->
+  <div id="preface">
+    <div class="preface-block">
+      <div class="preface-label">Preface <span style="font-weight:400;color:var(--text-secondary);">~5 pp.</span></div>
+      Why this book was written, who it is for, and how to use it. The preface situates the book against the current moment in AI tooling — a period in which foundation models have become commodities while the infrastructure surrounding them remains largely artisanal and undocumented. It describes the Upskilled harness as the running artifact throughout the text: every pattern in Part II is grounded in a real, publicly available codebase that readers can clone, instrument, and modify. It explains the two-part structure (narrative foundation, then pattern catalog), defines the notation used in pattern entries, and provides three suggested reading paths for different practitioner profiles.
+    </div>
+  </div>
+
+  <!-- Part I -->
+  <div id="part-i">
+    <div class="part-header">
+      <div class="part-eyebrow">Part I</div>
+      <div class="part-title">Foundations <span class="part-pages">~80 pp.</span></div>
+      <div class="part-desc">Four narrative chapters that build the argument, establish the measurement framework, and catalog the failure modes that motivated the patterns in Part II. Read these before engaging the catalog.</div>
+    </div>
+
+    <div class="chapter-entry">
+      <div class="chapter-entry-header">
+        <span class="chapter-num">Chapter 1</span>
+        <span class="chapter-name">The Harness Thesis</span>
+        <span class="page-count">~20 pp.</span>
+      </div>
+      <div class="chapter-entry-body">The book's central claim: for a fixed task domain, the quality of the scaffolding surrounding a language model matters more than the choice of model. This chapter presents the experimental evidence — controlled A/B runs across five open-source models of varying parameter counts, held constant except for the harness configuration — and shows that a well-designed pipeline lifts a 7B model above the unscaffolded baseline of a 70B model. The chapter frames the rest of the book around a single design question: <em>what does the harness owe the model, and what does it owe the user?</em> Key concepts introduced: the five-stage pipeline (decompose → research → synthesize → evaluate → persist), the producer/evaluator separation principle, and the distinction between model capability and pipeline capability.</div>
+    </div>
+
+    <div class="chapter-entry">
+      <div class="chapter-entry-header">
+        <span class="chapter-num">Chapter 2</span>
+        <span class="chapter-name">The Pipeline in Motion</span>
+        <span class="page-count">~20 pp.</span>
+      </div>
+      <div class="chapter-entry-body">A complete walkthrough of the harness pipeline as a software system. The chapter covers each of the eleven subsystems — Entry Points, Orchestration, Core Agent Loop, Inference, Research Tools, Skills, Memory, Security, API Routes, Observability, and Storage — by tracing a single research task from CLI invocation to vetted, persisted markdown output. This is the reader's first encounter with the system-overview diagram; each subsystem is introduced in functional terms before its implementing pattern is encountered in Part II. The chapter closes with a map from Part I chapters to Part II patterns, so readers know which patterns address which pipeline stages.</div>
+    </div>
+
+    <div class="chapter-entry">
+      <div class="chapter-entry-header">
+        <span class="chapter-num">Chapter 3</span>
+        <span class="chapter-name">Experimental Methodology</span>
+        <span class="page-count">~20 pp.</span>
+      </div>
+      <div class="chapter-entry-body">How to measure whether a harness change actually helps. This chapter introduces the TREATMENT/CONTROL naming convention used in the harness's output files, the <code style="font-family:var(--font-mono);font-size:13px;background:var(--wspc-bg-alt);padding:1px 5px;border-radius:3px;">runs.jsonl</code> audit trail, and the six-dimension decimalized rubric that produces a scalar quality score for every output. It covers the sample size problem (how many runs are needed before a difference in mean score is statistically reliable?), the risk of evaluator drift when the same model scores thousands of outputs over months, and the use of the Evaluator Pool pattern (Part II, Section C) to counteract it. Working Python snippets load <code style="font-family:var(--font-mono);font-size:13px;background:var(--wspc-bg-alt);padding:1px 5px;border-radius:3px;">runs.jsonl</code> into pandas, run Mann–Whitney U tests on score distributions, and generate the treatment-effect plots used throughout the book.</div>
+    </div>
+
+    <div class="chapter-entry">
+      <div class="chapter-entry-header">
+        <span class="chapter-num">Chapter 4</span>
+        <span class="chapter-name">Failure Taxonomy</span>
+        <span class="page-count">~20 pp.</span>
+      </div>
+      <div class="chapter-entry-body">Before the catalog of solutions, a catalog of problems. This chapter documents the six classes of harness failure observed across 1,500 logged runs: Retrieval Failures, Planning Failures, Synthesis Failures, Evaluation Failures, Revision Failures, and Infrastructure Failures. For each class, the chapter gives the observed frequency, a representative <code style="font-family:var(--font-mono);font-size:13px;background:var(--wspc-bg-alt);padding:1px 5px;border-radius:3px;">runs.jsonl</code> record, and a pointer to the Part II pattern that reduced its rate. This chapter is the connective tissue between the argument in Part I and the solutions in Part II.</div>
+    </div>
+  </div>
+
+  <!-- Part II -->
+  <div id="part-ii">
+    <div class="part-header" style="margin-top:56px;">
+      <div class="part-eyebrow">Part II</div>
+      <div class="part-title">The Pattern Catalog <span class="part-pages">~350 pp.</span></div>
+      <div class="part-desc">Twenty-seven patterns organized into seven sections. Each entry follows the standard structure: a one-line intent, an "also known as" field, a how-it-works narrative, a when-to-use section, a consequences table, implementation notes with code, and cross-references to related patterns. Expand any entry below to read the full summary.</div>
+    </div>
+
+    <!-- Section A -->
+    <div id="section-a" class="section-header">
+      <div><span class="section-id">Section A</span></div>
+      <div class="section-title">Inference Patterns <span class="section-pages">~60 pp.</span></div>
+      <div class="section-desc">Patterns governing how LLM calls are issued, routed, and kept warm — the substrate on which every other pattern depends.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">A1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Inference Shim <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Route all LLM calls through a single <code style="font-family:var(--font-mono);font-size:12.5px;">chat(model, messages)</code> interface regardless of which backend is serving the model, so that callers are insulated from backend-specific APIs.</div>
+          <div class="pattern-entry-aka">Also known as: Backend Abstraction Layer · Unified Inference Endpoint · OllamaLike Shim</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/inference.py</code> reads the model name, looks it up in <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_ENDPOINTS</code> (a JSON configuration mapping model tags to backend URLs and types), and routes the call to the appropriate backend: Ollama, vLLM, llama.cpp, or any OpenAI-compatible endpoint. The response is normalized into an <code style="font-family:var(--font-mono);font-size:12.5px;">OllamaLike</code> object so all calling code receives the same interface regardless of backend. Backend selection is invisible to the agent, planner, evaluator, and every other pattern in the catalog.</p>
+        <p><strong>Consequences.</strong> Callers never import backend SDKs directly. Switching a model from Ollama to vLLM requires only a one-line change in <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_ENDPOINTS</code>. The shim adds one function call of overhead — negligible against inference latency. The cost is that error messages from backends must be normalized, which requires maintaining per-backend error handling in one place. See also: <em>The Keep-Alive Budget</em> (A4), <em>The Model Role Separation</em> (A2).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">A2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Model Role Separation <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Assign language model calls to one of three non-overlapping roles — producer, evaluator, planner — and never use the same model instance for two different roles within the same run.</div>
+          <div class="pattern-entry-aka">Also known as: Producer–Evaluator Separation · Role-Typed Inference · Three-Role Architecture</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> The <code style="font-family:var(--font-mono);font-size:12.5px;">ModelConfig</code> dataclass carries three fields — <code style="font-family:var(--font-mono);font-size:12.5px;">producer</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">evaluator</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">planner</code> — populated at run start. The harness enforces at <code style="font-family:var(--font-mono);font-size:12.5px;">ModelConfig</code> construction time that the evaluator is always a different model than the producer, raising <code style="font-family:var(--font-mono);font-size:12.5px;">ConfigurationError</code> if they are the same. Cross-family selection of evaluator reduces shared-distribution bias at the cost of calibration variance across families.</p>
+        <p><strong>Consequences.</strong> Eliminates the self-evaluation bias documented in Chapter 4. Requires at minimum two distinct model instances to be loaded. See also: <em>The Evaluator Pool</em> (A3), <em>The Wiggum Loop</em> (C1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">A3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Evaluator Pool <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Rotate the evaluator model across runs using a deterministic hash of the run ID, converting systematic per-model scoring bias into measurable across-model variance.</div>
+          <div class="pattern-entry-aka">Also known as: Evaluator Rotation · Bias Dilution · Seeded Evaluator Selection</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_EVALUATOR_POOL</code> is a comma-separated list of model names. <code style="font-family:var(--font-mono);font-size:12.5px;">select_evaluator(seed)</code> hashes the seed (typically the run ID) using MD5 and takes the result modulo the pool size. The same run ID always selects the same evaluator — reproducibility is preserved — but different runs are distributed across the pool. A model that consistently over-scores <em>Groundedness</em> by 0.5 points will inflate the pass rate if used exclusively; distributed across a pool of four evaluators, the bias becomes variance that is visible in score distribution analytics.</p>
+        <p><strong>Consequences.</strong> Requires multiple evaluator models to be installed. Calibration drift across pool members shows up as high variance in per-evaluator score distributions in the <code style="font-family:var(--font-mono);font-size:12.5px;">runs.jsonl</code> analytics; the remedy is periodic recalibration runs against a held-out human-rated set. See also: <em>The Model Role Separation</em> (A2), <em>The RunTrace</em> (F1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">A4</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Keep-Alive Budget <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Pre-allocate VRAM residency across producer, evaluator, and planner models before any run begins, eliminating cold-start latency between pipeline stages.</div>
+          <div class="pattern-entry-aka">Also known as: Model Warm Cache · VRAM Residency Management · Keep-Alive Tuning</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> Ollama's <code style="font-family:var(--font-mono);font-size:12.5px;">keep_alive</code> parameter controls how long a model remains loaded in VRAM after its last inference call. The <code style="font-family:var(--font-mono);font-size:12.5px;">_estimate_keep_alive()</code> function in <code style="font-family:var(--font-mono);font-size:12.5px;">harness/agent.py</code> estimates the time between consecutive calls to each model and sets <code style="font-family:var(--font-mono);font-size:12.5px;">keep_alive</code> accordingly. On constrained hardware, the three-model budget is managed sequentially — planner loads, plans, unloads; producer loads, synthesizes; evaluator loads, evaluates — with each model loading taking 2–5 seconds rather than 30–60 seconds on a cold start.</p>
+        <p><strong>Consequences.</strong> Correct warm-cache management eliminates 60–90% of the latency that appears in Chrome Trace timelines as gaps between stages. Incorrect management causes VRAM pressure during synthesis that manifests as generation slowdown rather than OOM errors. See also: <em>The Inference Shim</em> (A1), <em>The RunTrace</em> (F1).</p>
+      </div>
+    </details>
+
+    <!-- Section B -->
+    <div id="section-b" class="section-header">
+      <div><span class="section-id">Section B</span></div>
+      <div class="section-title">Context Engineering Patterns <span class="section-pages">~80 pp.</span></div>
+      <div class="section-desc">Patterns governing what information reaches the synthesis model — the research half of the pipeline.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">B1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Planner-First <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Intercept every task before any search query is issued, producing a structured plan that replaces vague auto-generated queries with targeted ones and identifies what is already known.</div>
+          <div class="pattern-entry-aka">Also known as: Pre-Search Planning · Query Generation · Plan-Then-Search</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/planner.py</code> receives the task string and the agent's current memory context and calls a fast planner model. The model returns a <code style="font-family:var(--font-mono);font-size:12.5px;">Plan</code> dataclass with four fields: <code style="font-family:var(--font-mono);font-size:12.5px;">search_queries</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">known_facts</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">knowledge_gaps</code>, and <code style="font-family:var(--font-mono);font-size:12.5px;">subtasks</code>. The agent loop uses <code style="font-family:var(--font-mono);font-size:12.5px;">search_queries</code> exclusively; it never issues the raw task string as a search query.</p>
+        <p><strong>Consequences.</strong> Logged run comparisons show that planner-guided search reduces rounds needed to pass the Wiggum Loop by an average of 0.8 while cutting token consumption by ~22%. The cost is 12–18 seconds of planning latency before the first search. See also: <em>The DAG Orchestrator</em> (D1), <em>The Novelty Gate</em> (B2).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">B2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Novelty Gate <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Score each batch of search results against the agent's accumulated knowledge state and discard batches that add no new information before they reach the synthesis prompt.</div>
+          <div class="pattern-entry-aka">Also known as: Saturation Gate · Information Saturation Gating · Novelty-Gated Search</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">agent.gather_research()</code> runs multiple search rounds, each producing a batch of results. After each batch is retrieved, <code style="font-family:var(--font-mono);font-size:12.5px;">memory.assess_novelty(results, knowledge_state)</code> scores it on a 0–10 scale. Batches scoring below a configurable threshold (default: 3.0) are discarded. <code style="font-family:var(--font-mono);font-size:12.5px;">RESEARCH_CACHE=1</code> caches results keyed by query string so that Wiggum revision rounds do not re-fetch already-retrieved content.</p>
+        <p><strong>Consequences.</strong> Prevents the synthesis prompt from being diluted by redundant content. The main risk is an overly aggressive threshold that gates out novel content on the grounds that it overlaps with a general background fact. Tune the threshold using the <code style="font-family:var(--font-mono);font-size:12.5px;">novelty_score</code> field in <code style="font-family:var(--font-mono);font-size:12.5px;">runs.jsonl</code> tool calls. See also: <em>The Planner-First</em> (B1), <em>The Dual-Backend Memory Store</em> (B3).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">B3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Dual-Backend Memory Store <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~20 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Maintain a persistent observation store backed by two complementary retrieval engines — a vector database for semantic similarity and a full-text search index for exact keyword overlap — and query both at retrieval time.</div>
+          <div class="pattern-entry-aka">Also known as: Hybrid Memory Retrieval · ChromaDB + FTS5 · Two-Stage Memory</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> Every completed run writes a compressed observation to both ChromaDB (embedding it with <code style="font-family:var(--font-mono);font-size:12.5px;">all-MiniLM-L6-v2</code> into a 384-dimensional vector) and a SQLite FTS5 index. At retrieval time, <code style="font-family:var(--font-mono);font-size:12.5px;">memory.get_context(task)</code> queries ChromaDB first, then re-ranks the results using FTS5. The top four observations by re-ranked score are injected into the synthesis prompt as memory context.</p>
+        <p><strong>Consequences.</strong> Two backends are necessary because neither alone is sufficient: vector search finds semantic relatives even when no words overlap; FTS5 finds exact matches but treats paraphrases as unrelated. Together they achieve recall that neither can match alone, at the cost of maintaining two synchronized stores. See also: <em>The Planner-First</em> (B1), <em>The Novelty Gate</em> (B2), <em>The JSONL Audit Log</em> (F2).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">B4</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Semantic Chunker <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Extract the most relevant sections of a document too large for the synthesis context window, using section-priority rules for structured documents and embedding-based retrieval for unstructured ones.</div>
+          <div class="pattern-entry-aka">Also known as: Context Budget Extraction · Relevance-Guided Chunking · Hybrid Document Extractor</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/chunker.py</code> auto-detects the document type. Structured documents (three or more markdown headings) are extracted in priority order (Abstract > Conclusion > Introduction > Results > Methods > Other) until the 12,000-character budget is exhausted. Unstructured documents are split into overlapping 600-character chunks and ranked by cosine similarity to the task string.</p>
+        <p><strong>Consequences.</strong> The 12,000-character default budget was chosen to leave room for the task string, memory context, and synthesis instructions within a 32K context window. Tables, code blocks, and numbered lists require special-case handling documented in the implementation notes. See also: <em>The Dual-Backend Memory Store</em> (B3), <em>The Surgical Compressor</em> (C3).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">B5</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Vision Bridge <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~10 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Extract a structured text description from an image found in the task string and inject it into the pipeline context before any other processing, making visual content available to text-only synthesis models.</div>
+          <div class="pattern-entry-aka">Also known as: Image-to-Context Extraction · Multimodal Injection · Pre-Pipeline Vision</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/vision.py</code> scans the task string for file paths with image extensions. If found, it routes each image through the vision model (<code style="font-family:var(--font-mono);font-size:12.5px;">llama3.2-vision</code>, 11B parameters) with a structured extraction prompt requesting all visible text, data points from charts, a layout description, and identified objects. The resulting text description replaces the image path in the task context.</p>
+        <p><strong>Consequences.</strong> Enables the research pipeline to reason about visual artifacts without modifying any downstream pattern. Vision extraction adds 15–40 seconds per image. The pattern is not triggered for remote URLs — only local file paths — to prevent accidental disclosure of credentials embedded in URLs. See also: <em>The Inference Shim</em> (A1).</p>
+      </div>
+    </details>
+
+    <!-- Section C -->
+    <div id="section-c" class="section-header">
+      <div><span class="section-id">Section C</span></div>
+      <div class="section-title">Verification Patterns <span class="section-pages">~65 pp.</span></div>
+      <div class="section-desc">Patterns governing how output quality is measured and improved after synthesis.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">C1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Wiggum Loop <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~20 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Use a second model instance to evaluate synthesis output on multiple quality dimensions, route the dimensional feedback back to the producer for targeted revision, and repeat until the composite score exceeds a threshold or the maximum round count is reached.</div>
+          <div class="pattern-entry-aka">Also known as: Evaluate–Revise Loop · Cross-Model Verification · Producer–Evaluator Cycle</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/wiggum.py</code> runs up to three evaluate–revise cycles. In each cycle, the evaluator scores the output on six dimensions at 0.5-point resolution. If the composite is below 8.0, the feedback is routed to the producer as a revision prompt that highlights only the failing dimensions. Analysis of 1,500 logged runs shows that 75% of achievable quality improvement occurs in round 1, 18% in round 2, and the remainder in round 3; beyond three rounds, marginal gain falls below measurement noise.</p>
+        <p><strong>Consequences.</strong> Raises mean Wiggum score from 6.87 (single-pass) to 8.12 (post-loop), converting 61% first-pass rate to 89% final-pass rate. Adds 15–80 seconds per evaluation round. The loop's most common failure mode is revision regression — the producer improves a failing dimension while degrading a passing one. See also: <em>The Dimensional Rubric</em> (C2), <em>The Surgical Compressor</em> (C3).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">C2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Dimensional Rubric <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Score output quality on six named dimensions — Relevance, Completeness, Depth, Specificity, Structure, Groundedness — at 0.5-point resolution, using the per-dimension breakdown rather than the composite score to guide revision.</div>
+          <div class="pattern-entry-aka">Also known as: Six-Dimension Quality Rubric · Decimalized Scoring · LLM-as-a-Judge Rubric</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> The rubric is a structured prompt template in <code style="font-family:var(--font-mono);font-size:12.5px;">harness/prompts/eval.py</code>. Equal weighting was chosen after A/B experiments with alternative weightings failed to produce statistically significant quality improvements. The 8.0 composite threshold was calibrated against a human-rated holdout set of 200 outputs; it corresponds to the point at which human reviewers rate outputs as "good enough for intended use" at a 90% agreement rate.</p>
+        <p><strong>Consequences.</strong> The rubric was calibrated for long-form research synthesis and performs poorly for code generation, short-form Q&A, and creative writing. Domain-specific adaptations are straightforward modifications to the prompt template. See also: <em>The Wiggum Loop</em> (C1), <em>The ReAct Comparator</em> (C4).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">C3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Surgical Compressor <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Compress documents before evaluation and before revision using two distinct strategies: section-preserving compression for the evaluator and section-targeted compression for the producer.</div>
+          <div class="pattern-entry-aka">Also known as: Pre-Evaluation Summarization · Differential Compression · Context-Mode Compression</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/summarizer.py</code> exposes two functions. <code style="font-family:var(--font-mono);font-size:12.5px;">summarize_for_eval()</code> retains all second-level headings verbatim and condenses section bodies. <code style="font-family:var(--font-mono);font-size:12.5px;">summarize_for_revision()</code> parses the evaluator's feedback for section references and retains those sections verbatim. Triggering thresholds are distinct: 6,000 characters for evaluation, 5,000 for revision.</p>
+        <p><strong>Consequences.</strong> Without section-preserving evaluation compression, the evaluator scores <em>Completeness</em> on a skeleton and produces systematically biased feedback. Without section-targeted revision compression, the producer cannot locate the passages it needs to fix. See also: <em>The Wiggum Loop</em> (C1), <em>The Semantic Chunker</em> (B4).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">C4</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The ReAct Comparator <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Use the ReAct (Reason+Act) evaluation loop as a baseline against which the Wiggum Loop's performance is measured, and decide which loop to deploy based on task type, latency budget, and the availability of a distinct evaluator model.</div>
+          <div class="pattern-entry-aka">Also known as: ReAct vs. Wiggum · Evaluation Loop Selection · Loop-Mode Decision</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> The ReAct loop interleaves reasoning and action steps within a single model context. The Wiggum Loop replaces this with an external cross-model evaluation. The two approaches have complementary failure modes: ReAct loops fail when the evaluating model's reasoning about what to check is itself incorrect (reasoning errors compound); Wiggum loops fail when the rubric does not capture what matters for the task (rubric specification errors compound).</p>
+        <p><strong>Consequences.</strong> For general research synthesis with a distinct evaluator model available, the Wiggum Loop outperforms ReAct on all six rubric dimensions. For code verification tasks, ReAct — where the evaluating model can execute code snippets and observe errors — outperforms rubric-based scoring. This pattern is reference material; it does not introduce new code but documents the trade-off analysis that should precede any deployment decision. See also: <em>The Wiggum Loop</em> (C1).</p>
+      </div>
+    </details>
+
+    <!-- Section D -->
+    <div id="section-d" class="section-header">
+      <div><span class="section-id">Section D</span></div>
+      <div class="section-title">Orchestration Patterns <span class="section-pages">~70 pp.</span></div>
+      <div class="section-desc">Patterns governing how the harness coordinates multiple agents, routes tasks across instances, and exposes its capabilities to external systems.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">D1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The DAG Orchestrator <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~18 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Decompose a task too broad for a single agent run into a dependency graph of subtasks, verify the graph is acyclic, execute all independent subtasks concurrently in a thread pool, and assemble a cross-reference synthesis from the outputs.</div>
+          <div class="pattern-entry-aka">Also known as: Multi-Subtask Orchestrator · Parallel Research Decomposition · Kahn's-Algorithm Coordinator</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/orchestrator.py</code> receives a task and calls the planner for a <code style="font-family:var(--font-mono);font-size:12.5px;">subtasks</code> decomposition. Before any execution begins, <code style="font-family:var(--font-mono);font-size:12.5px;">_check_dag_cycles()</code> runs Kahn's topological sort algorithm and raises <code style="font-family:var(--font-mono);font-size:12.5px;">OrchestratorError</code> if a cycle is detected. Independent subtasks are dispatched to a <code style="font-family:var(--font-mono);font-size:12.5px;">ThreadPoolExecutor</code> (default: 4 workers, bounded by VRAM).</p>
+        <p><strong>Consequences.</strong> Effective parallelism is bounded by <code style="font-family:var(--font-mono);font-size:12.5px;">SUBTASK_MAX_WORKERS</code>. The assembly model is the most underspecified component: it must read N outputs and synthesize coherent cross-references, a task that degrades with N > 8 on models below 30B parameters. Subtask state isolation requires <em>The Worktree Context</em> (D2). See also: <em>The Worktree Context</em> (D2), <em>The MCP Dispatch Router</em> (D3).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">D2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Worktree Context <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~20 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Provision each concurrent subtask with an isolated, checkpointable Git worktree before dispatch, eliminating shared-state race conditions between parallel agent loops without container overhead or process isolation.</div>
+          <div class="pattern-entry-aka">Also known as: Worktree-per-Agent · Branched Execution Contexts · Git-Native State Isolation</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> Before the orchestrator dispatches any subtask, it calls <code style="font-family:var(--font-mono);font-size:12.5px;">git worktree add -b subtask/&lt;id&gt; .worktrees/&lt;id&gt; HEAD</code> to create a linked working tree on its own branch. Each subtask's agent loop runs with <code style="font-family:var(--font-mono);font-size:12.5px;">cwd</code> set to its worktree root. Worktrees are removed in a <code style="font-family:var(--font-mono);font-size:12.5px;">finally</code> block that runs regardless of what else goes wrong, with <code style="font-family:var(--font-mono);font-size:12.5px;">--force</code> to handle uncommitted changes.</p>
+        <p><strong>Consequences.</strong> Eliminates the silent failure mode documented in Chapter 4 (shared output paths overwrite each other). Worktree creation is instantaneous; no additional software dependencies are required. Disk usage equals one working tree copy per concurrent subtask. The pattern solves filesystem isolation; it does not solve coordination. See also: <em>The DAG Orchestrator</em> (D1), <em>The RunTrace</em> (F1).</p>
+        <p><a href="chapter-14-worktree-context.html" style="font-weight:700;color:var(--wspc-red);">→ Read the full sample chapter</a></p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">D3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The MCP Dispatch Router <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Route subtasks to remote harness instances over HTTP using keyword-pattern matching, enabling cross-team and cross-machine orchestration without modifying the orchestrator's local execution model.</div>
+          <div class="pattern-entry-aka">Also known as: Keyword-Routed Remote Dispatch · MCP Client Router · Cross-Instance Subtask Routing</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/mcp_dispatch.py</code> reads <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_MCP_ENDPOINTS</code> — a JSON map of keyword patterns to HTTP endpoints — and performs case-insensitive substring matching. The first match wins; the subtask is sent to that endpoint using the MCP protocol's <code style="font-family:var(--font-mono);font-size:12.5px;">run_task</code> tool. The result is returned to the orchestrator in the same format as a locally executed subtask.</p>
+        <p><strong>Consequences.</strong> Enables horizontal scaling: security-focused subtasks route to a security team's harness instance with specialized models. Matching is first-match-wins; keyword conflicts between teams must be resolved by ordering entries in <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_MCP_ENDPOINTS</code>. Remote dispatch adds 100ms–5s network round-trip overhead. See also: <em>The DAG Orchestrator</em> (D1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">D4</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Skill Registry <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Extend the agent with callable slash-command skills that inject additional context, replace the standard agent loop, or add post-processing steps, registered in a central dict that maps <code style="font-family:var(--font-mono);font-size:12.5px;">/command</code> strings to handler functions.</div>
+          <div class="pattern-entry-aka">Also known as: Slash-Command Registry · Plugin Hook System · Pre/Post-Hook Skills</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/cli.py</code> maintains a <code style="font-family:var(--font-mono);font-size:12.5px;">_SKILLS</code> dict mapping slash-command prefixes to handler callables. Five built-in skills: <code style="font-family:var(--font-mono);font-size:12.5px;">/lit-review</code> (7-stage academic literature review), <code style="font-family:var(--font-mono);font-size:12.5px;">/browser</code> (LLM-guided ARIA navigation), <code style="font-family:var(--font-mono);font-size:12.5px;">/email</code> (Gmail OAuth), <code style="font-family:var(--font-mono);font-size:12.5px;">/github</code> (git + gh CLI automation), and <code style="font-family:var(--font-mono);font-size:12.5px;">/deck</code> (PowerPoint generation from markdown).</p>
+        <p><strong>Consequences.</strong> Adding a skill requires one entry in <code style="font-family:var(--font-mono);font-size:12.5px;">_SKILLS</code> and one handler function. Skills that replace the agent loop bypass <em>The Wiggum Loop</em> (C1) by default; skills that want evaluation must call <code style="font-family:var(--font-mono);font-size:12.5px;">wiggum.loop()</code> explicitly. See also: <em>The DAG Orchestrator</em> (D1).</p>
+      </div>
+    </details>
+
+    <!-- Section E -->
+    <div id="section-e" class="section-header">
+      <div><span class="section-id">Section E</span></div>
+      <div class="section-title">Security Patterns <span class="section-pages">~50 pp.</span></div>
+      <div class="section-desc">Patterns that constrain what the agent can do to the host system and what external content can do to the agent's memory.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">E1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The AST Guard <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Analyze agent-generated Python code at the syntax-tree level before any execution, blocking code that contains dangerous constructs without requiring sandboxing infrastructure.</div>
+          <div class="pattern-entry-aka">Also known as: Static Code Guard · Syntax-Tree Code Scanner · Pre-Execution AST Check</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/security.check_python_code(code)</code> parses the code string using Python's <code style="font-family:var(--font-mono);font-size:12.5px;">ast</code> module (stdlib, no external dependencies) and walks the resulting tree looking for <code style="font-family:var(--font-mono);font-size:12.5px;">os.system</code> / <code style="font-family:var(--font-mono);font-size:12.5px;">subprocess</code> calls, <code style="font-family:var(--font-mono);font-size:12.5px;">__import__</code> of restricted modules, write-mode <code style="font-family:var(--font-mono);font-size:12.5px;">open()</code> outside the sandbox allowlist, <code style="font-family:var(--font-mono);font-size:12.5px;">exec()</code> / <code style="font-family:var(--font-mono);font-size:12.5px;">eval()</code> of dynamic strings, and network socket creation.</p>
+        <p><strong>Consequences.</strong> Catches the most common classes of dangerous agent-generated code without running any code in a subprocess or container. Cannot catch obfuscated code (e.g., base64-encoded <code style="font-family:var(--font-mono);font-size:12.5px;">exec</code> payloads) — that case is addressed by <em>The Injection Scanner</em> (E3). See also: <em>The Path Sandbox</em> (E2), <em>The Injection Scanner</em> (E3).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">E2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Path Sandbox <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Prevent file read operations from accessing sensitive paths or escaping the project directory by validating all file paths against an allowlist and a blocklist before any <code style="font-family:var(--font-mono);font-size:12.5px;">open()</code> call.</div>
+          <div class="pattern-entry-aka">Also known as: File Access Control · Canonical Path Guard · Directory Jail</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/security.check_file_path(path)</code> resolves symlinks and <code style="font-family:var(--font-mono);font-size:12.5px;">..</code> traversals to a canonical absolute path using <code style="font-family:var(--font-mono);font-size:12.5px;">pathlib.Path.resolve()</code>, then checks the result against an allowlist (<code style="font-family:var(--font-mono);font-size:12.5px;">data/</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">outputs/</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">skills/screenshots/</code>) and a blocklist (<code style="font-family:var(--font-mono);font-size:12.5px;">.env</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">.ssh/</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">.aws/</code>). Path traversal attacks like <code style="font-family:var(--font-mono);font-size:12.5px;">../../etc/passwd</code> are caught at the resolve step.</p>
+        <p><strong>Consequences.</strong> The blocklist uses suffix matching and is susceptible to novel credential filenames not on the list; the allowlist is the stronger defense. The pattern does not protect against agent code that circumvents the harness's own file-reading functions. See also: <em>The AST Guard</em> (E1), <em>The CDP Guard</em> (E4).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">E3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Injection Scanner <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Detect prompt injection attempts in external content before it reaches the memory store, allowing the content to be logged and the memory write to be blocked, while permitting the content to be used in synthesis with a warning.</div>
+          <div class="pattern-entry-aka">Also known as: Prompt Safety Gate · External Content Scanner · Injection Detection</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/security.scan_for_injection(text, source)</code> applies regex patterns against the content: phrases like "ignore previous instructions", role-switch commands, base64-encoded blobs above a length threshold, excessive system-level formatting, and Unicode confusable characters. Content scanned from web sources receives <code style="font-family:var(--font-mono);font-size:12.5px;">"warn"</code> severity; memory writes from flagged content receive <code style="font-family:var(--font-mono);font-size:12.5px;">"block"</code> severity.</p>
+        <p><strong>Consequences.</strong> The asymmetric severity (warn for synthesis, block for memory) reflects the asymmetric risk: a single injected synthesis prompt is contained to one run; an injected memory observation poisons all future runs that retrieve it. See also: <em>The Dual-Backend Memory Store</em> (B3), <em>The AST Guard</em> (E1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">E4</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The CDP Guard <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~10 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Prevent the browser skill from navigating to localhost, private IP ranges, or local filesystem paths, blocking Server-Side Request Forgery attacks where a malicious page instructs the agent to fetch internal services.</div>
+          <div class="pattern-entry-aka">Also known as: Browser Navigation Allowlist · SSRF Prevention · CDP URL Guard</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/security.check_cdp_navigate(url)</code> parses the URL, resolves the hostname, and blocks: <code style="font-family:var(--font-mono);font-size:12.5px;">localhost</code> and <code style="font-family:var(--font-mono);font-size:12.5px;">127.0.0.1</code> (direct SSRF), <code style="font-family:var(--font-mono);font-size:12.5px;">file://</code> scheme (local filesystem access via browser), and RFC 1918 private IP ranges. The block is enforced before the Playwright navigation call.</p>
+        <p><strong>Consequences.</strong> Covers the primary SSRF attack surface for browser-capable agents. Does not block DNS rebinding attacks — mitigating those requires resolving the hostname at check time and re-validating after navigation. See also: <em>The Path Sandbox</em> (E2), <em>The Skill Registry</em> (D4).</p>
+      </div>
+    </details>
+
+    <!-- Section F -->
+    <div id="section-f" class="section-header">
+      <div><span class="section-id">Section F</span></div>
+      <div class="section-title">Observability Patterns <span class="section-pages">~35 pp.</span></div>
+      <div class="section-desc">Patterns that make the pipeline's operation auditable, diagnosable, and analytically tractable.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">F1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The RunTrace <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~18 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Accumulate all telemetry for a run — stage transitions, LLM messages with token counts, tool calls with novelty scores, Wiggum scores per round, and elapsed time per stage — in a Python context manager that finalizes into a structured record on exit.</div>
+          <div class="pattern-entry-aka">Also known as: Run Context Manager · Structured Telemetry Accumulator · Pipeline Audit Record</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">harness/logger.RunTrace</code> is used with a <code style="font-family:var(--font-mono);font-size:12.5px;">with</code> statement wrapping each run. <code style="font-family:var(--font-mono);font-size:12.5px;">finalize()</code> writes the complete record to <code style="font-family:var(--font-mono);font-size:12.5px;">data/runs.jsonl</code> and emits a Chrome Trace Event format file to <code style="font-family:var(--font-mono);font-size:12.5px;">data/task_logs/&lt;run_id&gt;.trace.json</code>. The context manager pattern guarantees that <code style="font-family:var(--font-mono);font-size:12.5px;">finalize()</code> runs even if the run raises an exception.</p>
+        <p><strong>Consequences.</strong> The Chrome Trace file, loadable in <code style="font-family:var(--font-mono);font-size:12.5px;">ui.perfetto.dev</code>, reveals which stage accounts for the most latency. A pattern in the flame graph where the planner block is wider than the synthesis block indicates that the planner model is not staying warm in VRAM. See also: <em>The JSONL Audit Log</em> (F2).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">F2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The JSONL Audit Log <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~12 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Maintain an append-only log of every completed run as a newline-delimited JSON file, making the full pipeline history queryable with standard tooling (jq, pandas, DuckDB) and auditable without a database server.</div>
+          <div class="pattern-entry-aka">Also known as: runs.jsonl · Append-Only Run Log · Structured Run History</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> Every call to <code style="font-family:var(--font-mono);font-size:12.5px;">RunTrace.finalize()</code> appends exactly one JSON object to <code style="font-family:var(--font-mono);font-size:12.5px;">data/runs.jsonl</code>. The file is never rewritten. The record schema captures: <code style="font-family:var(--font-mono);font-size:12.5px;">run_id</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">task</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">wiggum_scores</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">wiggum_dimensions</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">final</code> (PASS/FAIL), <code style="font-family:var(--font-mono);font-size:12.5px;">tool_calls</code>, and <code style="font-family:var(--font-mono);font-size:12.5px;">output_path</code>.</p>
+        <p><strong>Consequences.</strong> The plain JSONL format is the pattern's primary advantage: no database schema migrations, no server dependency, full portability. A 1,000-run log is typically under 20 MB and loads into pandas in under a second. See also: <em>The RunTrace</em> (F1), <em>The Data Flywheel</em> (G1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">F3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Chrome Trace Exporter <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~5 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Emit run timing data in Chrome Trace Event format so that per-stage latency can be visualized as a flame graph in Perfetto UI without additional tooling.</div>
+          <div class="pattern-entry-aka">Also known as: Perfetto Export · Trace Event Emitter · Stage Timeline</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> <code style="font-family:var(--font-mono);font-size:12.5px;">RunTrace.finalize()</code> writes a <code style="font-family:var(--font-mono);font-size:12.5px;">{"traceEvents": [...]}</code> JSON file. Each event has <code style="font-family:var(--font-mono);font-size:12.5px;">name</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">ph</code> (phase: B/E for begin/end), <code style="font-family:var(--font-mono);font-size:12.5px;">ts</code> (microsecond timestamp), and <code style="font-family:var(--font-mono);font-size:12.5px;">pid</code>/<code style="font-family:var(--font-mono);font-size:12.5px;">tid</code>. The file is loadable in <code style="font-family:var(--font-mono);font-size:12.5px;">ui.perfetto.dev</code> by drag-and-drop; no Perfetto installation required.</p>
+        <p><strong>Consequences.</strong> Flame graph visualization is the fastest way to identify pipeline bottlenecks. The format is stable; the only maintenance risk is Perfetto UI API changes, which do not affect the file format. See also: <em>The RunTrace</em> (F1).</p>
+      </div>
+    </details>
+
+    <!-- Section G -->
+    <div id="section-g" class="section-header">
+      <div><span class="section-id">Section G</span></div>
+      <div class="section-title">Self-Improvement Patterns <span class="section-pages">~40 pp.</span></div>
+      <div class="section-desc">Patterns that close the loop between pipeline outputs and model training, turning every run into a contribution to the next model generation.</div>
+    </div>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">G1</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Data Flywheel <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~20 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Extract Supervised Fine-Tuning (SFT) and Direct Preference Optimization (DPO) datasets from <code style="font-family:var(--font-mono);font-size:12.5px;">runs.jsonl</code>, using the harness's own Wiggum scores as quality labels and PASS/FAIL pairs as preference signals.</div>
+          <div class="pattern-entry-aka">Also known as: Run-to-Dataset Extraction · Self-Labeling Training Pipeline · Preference Pair Extraction</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> SFT extraction filters <code style="font-family:var(--font-mono);font-size:12.5px;">runs.jsonl</code> for PASS runs above a score threshold and formats each as an instruction-completion pair compatible with Hugging Face <code style="font-family:var(--font-mono);font-size:12.5px;">trl</code>'s <code style="font-family:var(--font-mono);font-size:12.5px;">SFTTrainer</code>. DPO extraction finds tasks with both a PASS and a FAIL run, pairs them as <code style="font-family:var(--font-mono);font-size:12.5px;">(chosen, rejected)</code> preference pairs. The Wiggum Loop's revision rounds produce preference pairs automatically — the round-1 draft that scored 6.4 and the round-2 revision that scored 8.3 for the same task are a natural preference pair.</p>
+        <p><strong>Consequences.</strong> The flywheel works because the harness produces quality labels as a byproduct of normal operation. The quality of the SFT dataset depends directly on the calibration of the Wiggum evaluator; evaluator drift degrades label quality. See also: <em>The RL Rollout</em> (G2), <em>The JSONL Audit Log</em> (F2).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">G2</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The RL Rollout <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~15 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Use the Wiggum Loop as an online reward signal during training — generating candidate outputs, evaluating them with the rubric, and using the dimensional scores as a reward function — to produce RLHF-style training data without a separate reward model.</div>
+          <div class="pattern-entry-aka">Also known as: Wiggum-as-Reward · Online Reward Rollout · Self-Evaluation RL</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> During a rollout session, the harness generates N candidate outputs for a task using the producer model with varied temperature and sampling parameters. Each candidate is scored by the evaluator using <em>The Dimensional Rubric</em> (C2). Candidate pairs — high-reward vs. low-reward — are written as DPO preference pairs. Fine-tuning on the resulting dataset using QLoRA is covered in Chapter 20.</p>
+        <p><strong>Consequences.</strong> Eliminates the need for a separate reward model (the evaluator serves that role), at the cost of N × evaluator inference calls per rollout task. The risk is reward hacking: if the fine-tuned model learns to satisfy the rubric rather than to actually improve output quality, scores inflate while true quality stagnates. See also: <em>The Data Flywheel</em> (G1), <em>The Wiggum Loop</em> (C1).</p>
+      </div>
+    </details>
+
+    <details class="pattern-entry">
+      <summary class="pattern-entry-summary">
+        <span class="pattern-badge">G3</span>
+        <div class="pattern-summary-text">
+          <div class="pattern-entry-name">The Literature Review Pipeline <span class="page-count" style="font-size:12px;font-weight:400;color:var(--text-secondary);">~10 pp.</span></div>
+          <div class="pattern-entry-intent"><strong>Intent.</strong> Chain arXiv fetch, Semantic Scholar enrichment, multi-persona curation, per-paper annotation, thematic clustering, and cross-cluster synthesis into a seven-stage skill that produces a peer-review-quality literature survey from a topic string and a date range.</div>
+          <div class="pattern-entry-aka">Also known as: /lit-review Skill · Academic Survey Pipeline · Seven-Stage Literature Review</div>
+        </div>
+        <span class="pattern-toggle">Details</span>
+      </summary>
+      <div class="pattern-entry-body">
+        <p><strong>How it works.</strong> Implemented in <code style="font-family:var(--font-mono);font-size:12.5px;">harness/skills/lit_review_skill.py</code> (~880 LOC). The multi-persona curation stage uses five reviewer personas (Pragmatist, Rigorist, Synthesizer, Contrarian, Newcomer) — each scores papers 1–5; papers with mean ≥ 3.5 and no score below 2 pass. The pipeline can be invoked as <code style="font-family:var(--font-mono);font-size:12.5px;">oh /lit-review "speculative decoding" --after 2024-01 --max 50</code>.</p>
+        <p><strong>Consequences.</strong> The multi-persona curation stage rejects papers that any persona scores below 2 (single weak-link rule) while requiring broad consensus for inclusion (mean ≥ 3.5 across five perspectives). Runtime for a 50-paper review is typically 45–90 minutes on standard hardware. See also: <em>The Skill Registry</em> (D4), <em>The Wiggum Loop</em> (C1).</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Appendices -->
+  <div id="appendices" style="margin-top:52px;">
+    <div class="part-header">
+      <div class="part-eyebrow">Appendices</div>
+      <div class="part-title">Reference Material <span class="part-pages">~15 pp.</span></div>
+    </div>
+
+    <div class="appendix-entry">
+      <div class="appendix-label">Appendix A</div>
+      <div class="appendix-title">Environment Variable Reference <span style="font-weight:400;font-size:13px;color:var(--text-secondary);">~8 pp.</span></div>
+      <div class="appendix-body">Complete reference table for all harness environment variables — name, type, default value, and the pattern(s) that use it. Covers all inference (<code style="font-family:var(--font-mono);font-size:12.5px;">OLLAMA_HOST</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_ENDPOINTS</code>), orchestration (<code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_MCP_ENDPOINTS</code>, <code style="font-family:var(--font-mono);font-size:12.5px;">SUBTASK_MAX_WORKERS</code>), evaluation (<code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_EVALUATOR_POOL</code>), research (<code style="font-family:var(--font-mono);font-size:12.5px;">RESEARCH_CACHE</code>), security (<code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_CDP_PORT</code>), and self-improvement (<code style="font-family:var(--font-mono);font-size:12.5px;">HARNESS_ROLLOUT_N</code>) variables.</div>
+    </div>
+
+    <div class="appendix-entry">
+      <div class="appendix-label">Appendix B</div>
+      <div class="appendix-title">Hardware Sizing Guide <span style="font-weight:400;font-size:13px;color:var(--text-secondary);">~7 pp.</span></div>
+      <div class="appendix-body">Recommended configurations for three deployment profiles — Minimal (CPU-only or 8 GB VRAM, sequential model loading), Standard (24 GB VRAM, all three model roles warm simultaneously), and Production (multi-GPU or dedicated inference server, vLLM for high-throughput) — with model recommendations, expected throughput figures, and the pattern combinations that are feasible at each tier.</div>
+    </div>
+  </div>
+
+  <!-- Pattern Index -->
+  <div id="pattern-index" style="margin-top:52px;">
+    <div class="part-header">
+      <div class="part-eyebrow">Pattern Index</div>
+      <div class="part-title">All 27 Patterns — Alphabetical</div>
+    </div>
+    <table class="pattern-index">
+      <thead>
+        <tr>
+          <th>Pattern Name</th>
+          <th>ID</th>
+          <th>Section</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>The AST Guard</td><td><span class="idx-badge">E1</span></td><td>Security</td></tr>
+        <tr><td>The CDP Guard</td><td><span class="idx-badge">E4</span></td><td>Security</td></tr>
+        <tr><td>The Chrome Trace Exporter</td><td><span class="idx-badge">F3</span></td><td>Observability</td></tr>
+        <tr><td>The DAG Orchestrator</td><td><span class="idx-badge">D1</span></td><td>Orchestration</td></tr>
+        <tr><td>The Data Flywheel</td><td><span class="idx-badge">G1</span></td><td>Self-Improvement</td></tr>
+        <tr><td>The Dimensional Rubric</td><td><span class="idx-badge">C2</span></td><td>Verification</td></tr>
+        <tr><td>The Dual-Backend Memory Store</td><td><span class="idx-badge">B3</span></td><td>Context Engineering</td></tr>
+        <tr><td>The Evaluator Pool</td><td><span class="idx-badge">A3</span></td><td>Inference</td></tr>
+        <tr><td>The Inference Shim</td><td><span class="idx-badge">A1</span></td><td>Inference</td></tr>
+        <tr><td>The Injection Scanner</td><td><span class="idx-badge">E3</span></td><td>Security</td></tr>
+        <tr><td>The JSONL Audit Log</td><td><span class="idx-badge">F2</span></td><td>Observability</td></tr>
+        <tr><td>The Keep-Alive Budget</td><td><span class="idx-badge">A4</span></td><td>Inference</td></tr>
+        <tr><td>The Literature Review Pipeline</td><td><span class="idx-badge">G3</span></td><td>Self-Improvement</td></tr>
+        <tr><td>The MCP Dispatch Router</td><td><span class="idx-badge">D3</span></td><td>Orchestration</td></tr>
+        <tr><td>The Model Role Separation</td><td><span class="idx-badge">A2</span></td><td>Inference</td></tr>
+        <tr><td>The Novelty Gate</td><td><span class="idx-badge">B2</span></td><td>Context Engineering</td></tr>
+        <tr><td>The Path Sandbox</td><td><span class="idx-badge">E2</span></td><td>Security</td></tr>
+        <tr><td>The Planner-First</td><td><span class="idx-badge">B1</span></td><td>Context Engineering</td></tr>
+        <tr><td>The ReAct Comparator</td><td><span class="idx-badge">C4</span></td><td>Verification</td></tr>
+        <tr><td>The RL Rollout</td><td><span class="idx-badge">G2</span></td><td>Self-Improvement</td></tr>
+        <tr><td>The RunTrace</td><td><span class="idx-badge">F1</span></td><td>Observability</td></tr>
+        <tr><td>The Semantic Chunker</td><td><span class="idx-badge">B4</span></td><td>Context Engineering</td></tr>
+        <tr><td>The Skill Registry</td><td><span class="idx-badge">D4</span></td><td>Orchestration</td></tr>
+        <tr><td>The Surgical Compressor</td><td><span class="idx-badge">C3</span></td><td>Verification</td></tr>
+        <tr><td>The Vision Bridge</td><td><span class="idx-badge">B5</span></td><td>Context Engineering</td></tr>
+        <tr><td>The Wiggum Loop</td><td><span class="idx-badge">C1</span></td><td>Verification</td></tr>
+        <tr><td>The Worktree Context</td><td><span class="idx-badge">D2</span></td><td>Orchestration</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--text-secondary);margin-top:10px;font-style:italic;">Estimated total: ~455 pages</p>
+  </div>
+
+  <div class="chapter-footer">
+    <strong>Note.</strong> Page numbers will be assigned at final typesetting. Pattern counts reflect the current proposal; the final manuscript may include additional patterns identified during writing. The companion codebase and run log (<code>data/runs.jsonl</code>) are the primary artifacts; the pattern entries above are derived from that codebase.
+  </div>
+
+  <a class="back-link" href="index.html">← Back to book page</a>
+
+</div><!-- /page-wrap -->
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Development screenshot artifacts
+mockup-*.png
+preview-*.png
+wiggum-*.png
+diagram-*.png
+intro-*.png
+prior-art-*.png
+wspc-screenshot.png
+wspc-ref-page.png
+
+# Scratch/reference page
+wspc-page.html
+
+# playwright-cli artifacts
+.playwright-cli/

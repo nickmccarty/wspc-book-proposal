@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introduction — Agentic Harness Engineering</title>
+  <style>
+    :root {
+      --wspc-navy:      #1b2e5e;
+      --wspc-navy-dark: #122045;
+      --wspc-red:       #c0392b;
+      --wspc-link:      #1b5ea8;
+      --wspc-link-hover:#0f3d75;
+      --wspc-bg-alt:    #f7f8fc;
+      --text-primary:   #313131;
+      --text-secondary: #5a5a5a;
+      --border-default: #E5E7EB;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--wspc-link); text-decoration: none; }
+    a:hover { color: var(--wspc-link-hover); text-decoration: underline; }
+
+    /* Nav */
+    .util-bar {
+      background: var(--wspc-navy-dark);
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+    }
+    .util-bar-inner {
+      max-width: 1100px; margin: 0 auto; padding: 6px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .util-bar a { color: rgba(255,255,255,0.7); }
+    .util-bar-links { display: flex; gap: 20px; }
+    .site-nav {
+      background: var(--wspc-navy);
+      border-bottom: 3px solid var(--wspc-red);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 32px; height: 56px;
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 24px; flex: 1; }
+    .nav-links a { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      border-bottom: 1px solid var(--border-default);
+      background: var(--wspc-bg-alt);
+    }
+    .breadcrumb-inner {
+      max-width: 1100px; margin: 0 auto; padding: 10px 24px;
+      font-size: 13px; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .breadcrumb-sep { color: #bbb; }
+
+    /* Chapter layout */
+    .chapter-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 52px 24px 80px;
+    }
+
+    /* Chapter header */
+    .chapter-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--wspc-red);
+      margin-bottom: 10px;
+    }
+    .chapter-heading {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--wspc-navy);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .chapter-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--wspc-navy);
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .chapter-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* Prose */
+    .prose p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      max-width: 700px;
+    }
+    .prose h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--wspc-navy);
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .prose h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 32px 0 10px;
+    }
+    .prose hr {
+      border: none;
+      border-top: 1px solid var(--border-default);
+      margin: 36px 0;
+    }
+    .prose strong { font-weight: 700; color: var(--text-primary); }
+    .prose em { font-style: italic; }
+    .prose code {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      background: var(--wspc-bg-alt);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--wspc-red);
+    }
+    .prose ul, .prose ol {
+      padding-left: 24px;
+      margin: 12px 0 20px;
+    }
+    .prose li {
+      font-size: 16px;
+      line-height: 1.75;
+      margin-bottom: 6px;
+    }
+    .prose li ul { margin: 4px 0 8px; }
+
+    /* Opening callout */
+    .chapter-lede {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      font-style: italic;
+      border-left: 4px solid var(--wspc-navy);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      background: var(--wspc-bg-alt);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Part label boxes */
+    .part-box {
+      background: var(--wspc-bg-alt);
+      border: 1px solid var(--border-default);
+      border-left: 4px solid var(--wspc-navy);
+      border-radius: 0 4px 4px 0;
+      padding: 16px 20px;
+      margin: 20px 0 28px;
+    }
+    .part-box-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--wspc-navy);
+      margin-bottom: 6px;
+    }
+    .part-box p {
+      font-size: 14px !important;
+      line-height: 1.65 !important;
+      margin-bottom: 0 !important;
+      color: var(--text-primary);
+    }
+    .part-box ul {
+      font-size: 14px;
+      margin: 8px 0 0;
+    }
+
+    /* Footer note */
+    .chapter-footer {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-default);
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .chapter-footer code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--wspc-bg-alt);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--wspc-link);
+      margin-top: 32px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* Run-timeline diagram */
+    .run-diagram {
+      margin: 32px 0 8px;
+      background: var(--wspc-bg-alt);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 20px 20px 16px;
+      overflow-x: auto;
+    }
+    .run-diagram-caption {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+    .run-diagram svg { display: block; margin: 0 auto; overflow: visible; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body>
+
+<!-- Utility bar -->
+<div class="util-bar">
+  <div class="util-bar-inner">
+    <span>World Scientific Publishing Co. Pte. Ltd.</span>
+    <div class="util-bar-links">
+      <a href="#">My Account</a>
+      <a href="#">Librarians</a>
+      <a href="#">Authors</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img alt="World Scientific" src="https://www.worldscientific.com/pb-assets/releasedAssets/images/WSPC-LOGO-250-1541381839657.png" loading="eager" style="height:34px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="#">Books</a>
+      <a href="#">Journals</a>
+      <a href="#">Databases</a>
+      <a href="#">Computer Science</a>
+      <a href="#">AI &amp; Machine Learning</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="#">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#">Computer Science</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="index.html">Agentic Harness Engineering</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Introduction</span>
+  </div>
+</div>
+
+<!-- Chapter content -->
+<div class="chapter-wrap">
+  <div class="chapter-eyebrow">Free Preview · Introduction</div>
+  <h1 class="chapter-heading">Introduction</h1>
+  <div class="chapter-meta">
+    <span>Agentic Harness Engineering</span>
+    <span>Nicholas McCarty</span>
+    <span>World Scientific, 2026</span>
+    <span>Pages xv–xxviii</span>
+  </div>
+
+  <div class="prose">
+
+    <div class="chapter-lede">
+      There is a class of engineering problem that becomes visible only after you have built enough of something to see the pattern in what breaks.
+    </div>
+
+    <p>In software, the canonical example is concurrency. You can build a system that works perfectly under a single user, extend it to ten, extend it to a thousand, and never encounter the problem — until the day you do, and the failure has no stack trace, no error message, and no obvious cause. The root issue was always there. You just had not yet run the experiment that would reveal it.</p>
+
+    <p>Agentic AI systems have their own version of this problem, and it is not the one the field is currently debating.</p>
+
+    <p>The public conversation about AI agents is almost entirely about models: which foundation model is best, how large the context window is, whether chain-of-thought reasoning improves output quality. These are real questions. But they are the wrong level of abstraction for the practitioner who needs a system that works in production — reliably, auditably, and without silent failures that look like successes.</p>
+
+    <p>The practitioner's problem is the harness.</p>
+
+    <hr>
+
+    <h2>What This Book Is About</h2>
+
+    <p>A harness is the software layer that sits between a language model and the world: the code that decomposes a task into subtasks, routes each subtask to the right model, evaluates the result, decides whether to revise or accept, manages state across long-running runs, enforces security boundaries, and records enough telemetry to understand what happened after the fact.</p>
+
+    <p>Most practitioners build their harness the same way most people build their first concurrent system: incrementally, reactively, and without a vocabulary for the failure modes they have not yet encountered. They wire together a prompt template and an API call. They add memory when they realize the agent has none. They add an evaluation loop when they notice outputs are inconsistent. They add logging when something goes wrong and they cannot diagnose it.</p>
+
+    <p>This produces systems that work — until they do not. And when they fail, the failure is often of exactly the kind described above: silent, plausible-looking, and repeatable.</p>
+
+    <p>This book is a systematic treatment of the harness. It is organized as a pattern catalog in the tradition of Fowler's <em>Patterns of Enterprise Application Architecture</em> — twenty-seven named patterns across seven sections, each grounded in a real open-source codebase and validated against 1,500 logged production runs. The patterns are not theoretical. Each one was derived from observing a failure, diagnosing its root cause, and implementing a solution whose consequences were then measured over subsequent runs.</p>
+
+    <p>The empirical grounding matters. Pattern catalogs can become prescriptive without it — a collection of opinions dressed up as engineering. The patterns in this book each have a before-and-after: a failure class that motivated them, a metric by which their effect was measured, and a set of known uses drawn from the companion codebase's run log. Where a pattern has tradeoffs, those tradeoffs are stated explicitly, with the conditions under which they dominate.</p>
+
+    <hr>
+
+    <h2>The Failure That Started This</h2>
+
+    <p>The first concrete motivation for this book was a failure mode I call the <em>silent overwrite</em>.</p>
+
+    <p>When you run multiple research agents in parallel, each agent writes its output to a file. If two agents are working on related subtasks — variants of the same parent task — and both derive their output filename from a hash of the task string, the filenames can collide. The second writer overwrites the first. The run log shows two completions. The filesystem shows one file.</p>
+
+    <p>The assembly model reads the available outputs and produces a document that looks, on the surface, like a complete multi-perspective synthesis. It is not. The evaluation system scores it, and it passes — because the evaluator cannot detect the absence of content it never saw. The run goes into <code>runs.jsonl</code> as a PASS.</p>
+
+    <p>There is no crash. There is no warning. There is no indication that anything went wrong.</p>
+
+    <p>This failure occurred on the forty-third logged run of the first parallel orchestration implementation. It was not caught until run sixty-one, when a spot-check of the assembly model's output against its claimed source count revealed the discrepancy. Eighteen runs had passed evaluation with a hidden defect.</p>
+
+    <p>The fix — Pattern D2, the Worktree Context — is forty lines of code in <code>orchestrator.py</code>. It provisions each concurrent subtask with an isolated Git worktree before dispatch, giving each agent its own filesystem environment so that no two agents can write to the same path. The fix is not complicated. The problem is that you have to know to look for it, and to know to look for it, you have to have seen the failure.</p>
+
+    <p>This book is the accumulated knowledge of having seen the failures.</p>
+
+    <div class="run-diagram">
+      <svg id="run-timeline" viewBox="0 0 680 200" width="640" height="200" aria-label="Run timeline showing the silent overwrite failure window from run 43 to run 61"></svg>
+      <div class="run-diagram-caption">
+        Figure 0.1 — Seventy logged runs. The evaluation system scored every run as PASS. Eighteen were not.
+      </div>
+    </div>
+
+    <script>
+    (function () {
+      const W = 680, H = 200;
+      const ML = 40, MR = 20, MT = 96, MB = 28;
+      const NAVY = '#1b2e5e', RED = '#c0392b', GREEN = '#27ae60';
+      const GOLD = '#b8860b', LGRAY = '#bbb', GRAY = '#5a5a5a';
+      const TOTAL = 70, FAIL_S = 43, FAIL_E = 61;
+
+      const svg = d3.select('#run-timeline');
+
+      // x scale
+      const xS = d3.scaleLinear().domain([1, TOTAL]).range([ML, W - MR]);
+      const trackY = MT + 14, trackH = 14;
+
+      // ── Background zones ────────────────────────────────────────
+      // Clean zone A: 1-42
+      svg.append('rect')
+        .attr('x', xS(1)).attr('y', trackY)
+        .attr('width', xS(42) - xS(1)).attr('height', trackH)
+        .attr('rx', 3).attr('fill', NAVY).attr('opacity', 0.15);
+      // Silent failure zone: 43-61
+      svg.append('rect')
+        .attr('x', xS(43)).attr('y', trackY)
+        .attr('width', xS(61) - xS(43)).attr('height', trackH)
+        .attr('rx', 2).attr('fill', RED).attr('opacity', 0.12);
+      // Clean zone B: 62-70
+      svg.append('rect')
+        .attr('x', xS(62)).attr('y', trackY)
+        .attr('width', xS(70) - xS(62)).attr('height', trackH)
+        .attr('rx', 3).attr('fill', NAVY).attr('opacity', 0.15);
+
+      // ── Run dots ────────────────────────────────────────────────
+      for (let r = 1; r <= TOTAL; r++) {
+        const inFail = r >= FAIL_S && r <= FAIL_E;
+        svg.append('circle')
+          .attr('cx', xS(r)).attr('cy', trackY + trackH / 2)
+          .attr('r', inFail ? 4 : 3)
+          .attr('fill', inFail ? RED : NAVY)
+          .attr('opacity', inFail ? 0.85 : 0.55);
+      }
+
+      // ── Evaluator "PASS" label centered above failure zone ─────
+      // White backing rect prevents leader-line bleed-through at y=70
+      const fzMid = (xS(FAIL_S) + xS(FAIL_E)) / 2;
+      svg.append('rect').attr('x', fzMid - 78).attr('y', 57)
+        .attr('width', 156).attr('height', 16)
+        .attr('fill', '#f7f8fc').attr('opacity', 0.9);
+      svg.append('text').attr('x', fzMid).attr('y', 70)
+        .attr('text-anchor', 'middle').attr('font-size', 10)
+        .attr('font-weight', '700').attr('fill', RED).attr('letter-spacing', '0.06em')
+        .text('EVALUATOR: PASS ✓ (×18)');
+
+      // Bracket under failure zone
+      const bY = trackY + trackH + 5;
+      svg.append('line').attr('x1', xS(FAIL_S)).attr('y1', bY)
+        .attr('x2', xS(FAIL_E)).attr('y2', bY)
+        .attr('stroke', RED).attr('stroke-width', 1).attr('opacity', 0.5);
+      svg.append('line').attr('x1', xS(FAIL_S)).attr('y1', bY)
+        .attr('x2', xS(FAIL_S)).attr('y2', bY - 4).attr('stroke', RED).attr('stroke-width', 1).attr('opacity', 0.5);
+      svg.append('line').attr('x1', xS(FAIL_E)).attr('y1', bY)
+        .attr('x2', xS(FAIL_E)).attr('y2', bY - 4).attr('stroke', RED).attr('stroke-width', 1).attr('opacity', 0.5);
+
+      // ── Annotation: run 43 ──────────────────────────────────────
+      // Leader runs from trackY-10 (100) up to y=44; callout text at y=16/28/40
+      const x43 = xS(FAIL_S);
+      svg.append('line').attr('x1', x43).attr('y1', trackY - 10)
+        .attr('x2', x43).attr('y2', 44)
+        .attr('stroke', RED).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+      svg.append('text').attr('x', x43 - 3).attr('y', 16)
+        .attr('text-anchor', 'end').attr('font-size', 10).attr('fill', RED).attr('font-weight', '600')
+        .text('run 43');
+      svg.append('text').attr('x', x43 - 3).attr('y', 28)
+        .attr('text-anchor', 'end').attr('font-size', 9).attr('fill', RED)
+        .text('silent overwrite');
+      svg.append('text').attr('x', x43 - 3).attr('y', 40)
+        .attr('text-anchor', 'end').attr('font-size', 9).attr('fill', RED)
+        .text('first occurs');
+
+      // ── Annotation: run 61 ──────────────────────────────────────
+      const x61 = xS(FAIL_E);
+      svg.append('line').attr('x1', x61).attr('y1', trackY - 10)
+        .attr('x2', x61).attr('y2', 44)
+        .attr('stroke', GOLD).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+      svg.append('text').attr('x', x61 + 4).attr('y', 16)
+        .attr('text-anchor', 'start').attr('font-size', 10).attr('fill', GOLD).attr('font-weight', '600')
+        .text('run 61');
+      svg.append('text').attr('x', x61 + 4).attr('y', 28)
+        .attr('text-anchor', 'start').attr('font-size', 9).attr('fill', GOLD)
+        .text('spot-check');
+      svg.append('text').attr('x', x61 + 4).attr('y', 40)
+        .attr('text-anchor', 'start').attr('font-size', 9).attr('fill', GOLD)
+        .text('reveals gap');
+
+      // ── X-axis tick labels ───────────────────────────────────────
+      const ticks = [1, 10, 20, 30, 40, 43, 50, 61, 70];
+      ticks.forEach(r => {
+        svg.append('text').attr('x', xS(r)).attr('y', trackY + trackH + 18)
+          .attr('text-anchor', 'middle').attr('font-size', 9)
+          .attr('fill', (r === 43 || r === 61) ? (r === 61 ? GOLD : RED) : LGRAY)
+          .attr('font-weight', (r === 43 || r === 61) ? '700' : '400')
+          .text(r);
+      });
+
+      // ── "Pattern D2 fix" marker after run 61 ────────────────────
+      const xFix = xS(63);
+      svg.append('line').attr('x1', xFix).attr('y1', trackY + trackH / 2)
+        .attr('x2', xFix + 22).attr('y2', trackY + trackH / 2)
+        .attr('stroke', GREEN).attr('stroke-width', 1.5)
+        .attr('marker-end', 'url(#arr-fix)');
+      // Arrow marker
+      const defs = svg.append('defs');
+      defs.append('marker').attr('id', 'arr-fix')
+        .attr('markerWidth', 6).attr('markerHeight', 6)
+        .attr('refX', 5).attr('refY', 3).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,0 L6,3 L0,6 Z').attr('fill', GREEN);
+      svg.append('text').attr('x', xFix + 26).attr('y', trackY + trackH / 2 + 4)
+        .attr('font-size', 9).attr('fill', GREEN).attr('font-weight', '600')
+        .text('Pattern D2');
+    })();
+    </script>
+
+    <hr>
+
+    <h2>Prior Art</h2>
+
+    <p>This book does not claim to have invented the agentic loop. Credit for that insight belongs to <a href="https://ghuntley.com/" target="_blank">Geoffrey Huntley</a>, whose <a href="https://ghuntley.com/ralph/" target="_blank"><em>Ralph</em></a> pattern crystallized something practitioners had been circling around and made it reproducible. The mechanism is elegant precisely because it is dumb: a bash loop feeding a prompt file to an LLM CLI, with an implementation plan persisting on disk as shared state between otherwise isolated context windows. The agent figures out what to do next by reading its own previous output. Context becomes a unit of work rather than a session; the loop provides continuity without state pollution. <a href="https://claytonfarr.github.io/ralph-playbook/" target="_blank">Clayton Farr's <em>Ralph Playbook</em></a> — a careful operational distillation of Huntley's approach from his videos and original writing — is an excellent guide to the pattern as Huntley designed it.</p>
+
+    <p>This book's contribution is what happens inside the loop. Ralph defines the outer mechanism and the planning files. What it does not prescribe — and deliberately leaves to the practitioner — is how to evaluate the output of each iteration before committing it; how to run multiple subtasks concurrently without shared-state race conditions; how to build a memory system that survives context resets; and how to instrument the pipeline so that every run produces structured data for later analysis and fine-tuning. Those are the questions the pattern catalog in Part II attempts to answer.</p>
+
+    <p>Three patterns in Part II are in direct conversation with Ralph's foundational insights. The Worktree Context (Chapter 14, Pattern D2) is Ralph's context-isolation principle applied to concurrent multi-agent execution: where Ralph gives each loop iteration a fresh context window, the Worktree Context gives each concurrent subtask a fresh Git working tree, so that no two agents can write to the same path during parallel orchestration. The Wiggum Loop (Chapter 10, Pattern C1) is the quality gate that Ralph's outer loop invites but does not specify — a producer–evaluator cycle that runs inside each iteration and prevents the loop from committing outputs that have not passed a multi-dimensional rubric. The Dual-Backend Memory Store (Pattern B3) is the systematic response to what Huntley identifies as the binding constraint — context is everything — taken to its logical conclusion: a memory layer that accumulates semantic knowledge across runs and survives the context resets that the outer loop depends on.</p>
+
+    <p>The harness this book describes is designed to compose with a Ralph-style outer loop. The commit-per-iteration discipline, the file-system-as-state philosophy, the fresh-context-per-task architecture — these are not coincidences. They are the same design principles, applied one layer deeper.</p>
+
+    <hr>
+
+    <h2>How the Book Is Organized</h2>
+
+    <p>The book is in two parts.</p>
+
+    <div class="part-box">
+      <div class="part-box-title">Part I — The System (Chapters 1–4, ~80 pages)</div>
+      <p>Four narrative chapters that establish the vocabulary and conceptual framework.</p>
+      <ul>
+        <li><strong>Chapter 1: The Harness Thesis.</strong> The central claim: output quality is determined more by the harness than by the model, for any fixed task domain and capability tier. Controlled A/B experiments across five model configurations.</li>
+        <li><strong>Chapter 2: The Pipeline in Motion.</strong> A single research task traced through all eleven subsystems — entry point, planning, agent loop, evaluation, memory update, telemetry — to make the system concrete before decomposing it.</li>
+        <li><strong>Chapter 3: Experimental Methodology.</strong> The six-dimension quality rubric, evaluator pool rotation, failure taxonomy derivation, and the statistical treatment used to validate the patterns in Part II.</li>
+        <li><strong>Chapter 4: Failure Taxonomy.</strong> Six failure classes derived from 1,500 logged runs: Retrieval, Planning, Synthesis, Evaluation, Revision, Infrastructure. Frequencies, representative records, and pattern pointers for each class.</li>
+      </ul>
+    </div>
+
+    <div class="part-box">
+      <div class="part-box-title">Part II — The Pattern Catalog (Patterns A1–G3, ~350 pages)</div>
+      <p>Twenty-seven named patterns across seven sections. Each entry: intent · also known as · how it works · applicability · consequences · implementation with code · related patterns.</p>
+      <ul>
+        <li><strong>Section A — Inference:</strong> The inference shim, model role separation, evaluator pool rotation, keep-alive budget.</li>
+        <li><strong>Section B — Context Engineering:</strong> Planner-first architecture, novelty gate, dual-backend memory store, semantic chunker, vision bridge.</li>
+        <li><strong>Section C — Verification:</strong> The Wiggum Loop, the dimensional rubric, the surgical compressor, the ReAct comparator.</li>
+        <li><strong>Section D — Orchestration:</strong> The DAG orchestrator, the Worktree Context, the MCP dispatch router, the skill registry.</li>
+        <li><strong>Section E — Security:</strong> AST Guard, Path Sandbox, Injection Scanner, CDP Guard.</li>
+        <li><strong>Section F — Observability:</strong> RunTrace, the dashboard, the failure classifier.</li>
+        <li><strong>Section G — Self-Improvement:</strong> The data flywheel, RL rollout, the literature review pipeline.</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <h2>What This Book Is Not</h2>
+
+    <p>This book is not a tutorial on prompt engineering. Prompt engineering is a consequential practice, but it is the domain of the model, not the harness.</p>
+
+    <p>This book is not a survey of foundation models or a benchmark comparison. The companion codebase runs entirely on local hardware — Ollama, vLLM, llama.cpp — with no external API keys required, specifically because the claim of the book is that harness design matters more than model selection for a fixed capability tier.</p>
+
+    <p>This book is not an introduction to Python or TypeScript. The implementation chapters assume fluency with both. The patterns describe <em>what</em> to build and <em>why</em>; the code shows <em>how</em>.</p>
+
+    <p>This book is not a collection of opinions about what agentic systems should eventually look like. Every pattern in it is running in production. Every failure class in Chapter 4 is drawn from a real run log. The empirical grounding is not decoration — it is the point.</p>
+
+    <hr>
+
+    <h2>Who This Book Is For</h2>
+
+    <p>The primary audience is the software engineer who has already shipped something agentic and is now trying to understand why it behaves the way it does. The pattern vocabulary gives you language for problems you may have encountered without knowing what to call them.</p>
+
+    <p>The secondary audience is the researcher or architect who is designing an agentic system and wants to understand the failure modes in advance. Part I's failure taxonomy and the when-not-to-use sections of the pattern entries are written for this reader.</p>
+
+    <p>The tertiary audience is the technical leader who needs to evaluate an existing agentic implementation. The pattern catalog gives you a checklist: here are the twenty-seven things a production harness should address, here is what to look for in the code, and here is what failure looks like when each is absent.</p>
+
+    <hr>
+
+    <h2>The Companion Codebase</h2>
+
+    <p>Every pattern in this book has a corresponding module in the companion repository. The codebase is the primary artifact; the book is its documentation and theoretical frame.</p>
+
+    <p>The repository runs on a single consumer GPU (minimum 8 GB VRAM for single-model deployment; 24 GB for simultaneous producer/evaluator/planner). All models are open-weight. All infrastructure dependencies — ChromaDB, SQLite, Git — are local.</p>
+
+    <p>The run log — 1,500 entries in <code>runs.jsonl</code> — is included in the repository. Each entry records the task, the model configuration, the Wiggum scores across all evaluation rounds, the final output, the failure class (if any), and the Chrome Trace Events file for that run.</p>
+
+    <hr>
+
+    <h2>A Note on the Title</h2>
+
+    <p><em>Agentic harness engineering</em> is not a term of art in the current literature. It is a deliberate choice.</p>
+
+    <p><em>Harness</em> is borrowed from the testing tradition — a test harness is the scaffolding around the code under test. Borrowing it for the agentic context makes explicit the relationship between the harness and the model: the model is under test, in the sense that its outputs are subject to evaluation, revision, and quality gating. The harness is what makes that evaluation possible and routes the model's outputs to whatever comes next.</p>
+
+    <p><em>Engineering</em> is equally deliberate. The patterns in this book are engineering artifacts, not theoretical proposals. They have implementations, failure modes, measurable consequences, and known uses. The book treats the harness as what it is: a production software system, subject to the same disciplines that software engineering has developed for production systems in every other domain.</p>
+
+    <p>The patterns are waiting for the failures. This book is the map.</p>
+
+  </div><!-- /prose -->
+
+  <div class="chapter-footer">
+    <strong>Code.</strong> The companion codebase is available at the repository linked in Appendix A. Running the examples requires Python 3.11+, Git, and at least 8 GB of VRAM. Full environment setup is documented in <code>SETUP.md</code>. The run log is at <code>data/runs.jsonl</code>.
+  </div>
+
+  <a class="back-link" href="index.html">← Back to book page</a>
+
+</div><!-- /chapter-wrap -->
+
+</body>
+</html>

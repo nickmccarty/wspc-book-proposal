@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas McCarty — Agentic Harness Engineering</title>
+  <style>
+    :root {
+      --wspc-navy:      #1b2e5e;
+      --wspc-navy-dark: #122045;
+      --wspc-red:       #c0392b;
+      --wspc-gold:      #b8860b;
+      --wspc-link:      #1b5ea8;
+      --wspc-link-hover:#0f3d75;
+      --wspc-bg-alt:    #f7f8fc;
+      --text-primary:   #313131;
+      --text-secondary: #5a5a5a;
+      --border-default: #E5E7EB;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); font-size: 16px; line-height: 1.75; color: var(--text-primary); background: #fff; -webkit-font-smoothing: antialiased; }
+    a { color: var(--wspc-link); text-decoration: none; }
+    a:hover { color: var(--wspc-link-hover); text-decoration: underline; }
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--wspc-bg-alt); padding: 1px 5px; border-radius: 3px; color: var(--wspc-red); }
+
+    /* Nav */
+    .util-bar { background: var(--wspc-navy-dark); color: rgba(255,255,255,0.7); font-size: 12px; }
+    .util-bar-inner { max-width: 1100px; margin: 0 auto; padding: 6px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .util-bar a { color: rgba(255,255,255,0.7); }
+    .util-bar-links { display: flex; gap: 20px; }
+    .site-nav { background: var(--wspc-navy); border-bottom: 3px solid var(--wspc-red); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 32px; height: 56px; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 24px; flex: 1; }
+    .nav-links a { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+    .breadcrumb { border-bottom: 1px solid var(--border-default); background: var(--wspc-bg-alt); }
+    .breadcrumb-inner { max-width: 1100px; margin: 0 auto; padding: 10px 24px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .breadcrumb-sep { color: #bbb; }
+
+    /* Page */
+    .page-wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* Hero */
+    .author-hero { display: grid; grid-template-columns: 160px 1fr; gap: 36px; align-items: flex-start; margin-bottom: 48px; padding-bottom: 40px; border-bottom: 2px solid var(--wspc-navy); }
+    .author-photo { width: 148px; height: 148px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-default); display: block; }
+    .author-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wspc-red); margin-bottom: 8px; }
+    .author-name { font-size: 28px; font-weight: 700; color: var(--wspc-navy); line-height: 1.2; margin-bottom: 4px; }
+    .author-title { font-size: 15px; color: var(--text-secondary); margin-bottom: 14px; }
+    .author-bio-short { font-size: 15px; line-height: 1.75; color: var(--text-primary); margin-bottom: 18px; }
+    .author-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .author-link { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 500; color: var(--wspc-link); background: var(--wspc-bg-alt); border: 1px solid var(--border-default); border-radius: 4px; padding: 4px 12px; }
+    .author-link:hover { background: var(--wspc-navy); color: #fff; border-color: var(--wspc-navy); text-decoration: none; }
+
+    /* CV sections */
+    .cv-section { margin-bottom: 44px; }
+    .cv-section-title { font-size: 18px; font-weight: 700; color: var(--wspc-navy); padding-bottom: 8px; border-bottom: 1px solid var(--border-default); margin-bottom: 20px; }
+
+    /* Experience entries */
+    .cv-entry { margin-bottom: 22px; }
+    .cv-entry-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+    .cv-entry-role { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .cv-entry-org { font-size: 15px; font-weight: 700; color: var(--wspc-navy); }
+    .cv-entry-dates { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+    .cv-entry-body { font-size: 14.5px; line-height: 1.75; color: var(--text-primary); }
+    .cv-entry-body ul { padding-left: 20px; margin-top: 6px; }
+    .cv-entry-body li { margin-bottom: 4px; }
+    .cv-entry + .cv-entry { border-top: 1px solid var(--border-default); padding-top: 20px; }
+
+    /* Publication */
+    .pub-entry { background: var(--wspc-bg-alt); border: 1px solid var(--border-default); border-left: 4px solid var(--wspc-navy); border-radius: 0 4px 4px 0; padding: 14px 18px; margin-bottom: 12px; }
+    .pub-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+    .pub-meta { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .pub-meta a { color: var(--wspc-link); }
+
+    /* Skill tags */
+    .skill-group { margin-bottom: 14px; }
+    .skill-group-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 6px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .skill-tag { font-size: 13px; color: var(--wspc-navy); background: #e8edf8; border: 1px solid #c5d0e8; border-radius: 3px; padding: 2px 10px; }
+
+    /* Reviewers table */
+    .reviewer-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+    .reviewer-table th { background: var(--wspc-navy); color: #fff; text-align: left; padding: 8px 14px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .reviewer-table td { padding: 9px 14px; border-bottom: 1px solid var(--border-default); vertical-align: top; }
+    .reviewer-table tr:last-child td { border-bottom: none; }
+    .reviewer-table tr:hover td { background: var(--wspc-bg-alt); }
+
+    /* Course module list */
+    .module-list { list-style: none; padding: 0; margin: 8px 0 0; }
+    .module-list li { font-size: 14px; line-height: 1.65; color: var(--text-primary); padding: 6px 0; border-bottom: 1px solid var(--border-default); display: flex; gap: 12px; }
+    .module-list li:last-child { border-bottom: none; }
+    .module-id { font-size: 11.5px; font-weight: 700; color: var(--wspc-navy); background: #e8edf8; border-radius: 3px; padding: 1px 7px; white-space: nowrap; align-self: flex-start; margin-top: 2px; }
+
+    /* Footer */
+    .chapter-footer { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--border-default); font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--wspc-link); margin-top: 28px; }
+    .back-link:hover { text-decoration: underline; }
+
+    @media (max-width: 580px) {
+      .author-hero { grid-template-columns: 1fr; }
+      .author-photo { width: 110px; height: 110px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="util-bar">
+  <div class="util-bar-inner">
+    <span>World Scientific Publishing Co. Pte. Ltd.</span>
+    <div class="util-bar-links">
+      <a href="#">My Account</a>
+      <a href="#">Librarians</a>
+      <a href="#">Authors</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img alt="World Scientific" src="https://www.worldscientific.com/pb-assets/releasedAssets/images/WSPC-LOGO-250-1541381839657.png" loading="eager" style="height:34px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="#">Books</a>
+      <a href="#">Journals</a>
+      <a href="#">Databases</a>
+      <a href="#">Computer Science</a>
+      <a href="#">AI &amp; Machine Learning</a>
+    </div>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="#">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#">Computer Science</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="index.html">Agentic Harness Engineering</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>About the Author</span>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <div class="author-hero">
+    <img class="author-photo" src="headshot.png" alt="Nicholas McCarty">
+    <div>
+      <div class="author-eyebrow">About the Author</div>
+      <div class="author-name">Nicholas McCarty</div>
+      <div class="author-title">Principal Consultant · Upskilled Consulting · Sacramento, CA</div>
+      <p class="author-bio-short">
+        Machine learning and data science practitioner with experience in computer vision, NLP, recommender systems, and foundation-model workflows. Designer and primary maintainer of the open-source Upskilled harness — a full-stack Python and TypeScript scaffolding framework for autonomous research agents — and creator of the <em>Harness Engineering for AI Agents</em> course series. His practice focuses on the infrastructure layer of AI systems: the pipeline scaffolding, evaluation loops, memory architectures, and observability tooling that determine whether a capable model delivers capable results.
+      </p>
+      <div class="author-links">
+        <a class="author-link" href="mailto:nick@upskilled.consulting">✉ nick@upskilled.consulting</a>
+        <a class="author-link" href="https://linkedin.com/in/nicholasmccarty" target="_blank">in LinkedIn</a>
+        <a class="author-link" href="https://github.com/nickmccarty" target="_blank">⌥ GitHub</a>
+        <a class="author-link" href="https://upskilled.consulting" target="_blank">↗ upskilled.consulting</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Position -->
+  <div class="cv-section">
+    <div class="cv-section-title">Current Position</div>
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Manager / Principal Consultant</span> &nbsp;·&nbsp; <span class="cv-entry-org">Upskilled Consulting</span></span>
+        <span class="cv-entry-dates">March 2024 – Present</span>
+      </div>
+      <div class="cv-entry-body">
+        <p>Designs and deploys agentic AI systems for research, knowledge management, and document synthesis workflows. Practice areas include harness architecture, LLM evaluation loop design, retrieval-augmented generation pipelines, and local inference infrastructure. Uses photogrammetry, novel scene synthesis (3D Gaussian Splatting), and remote sensing imagery to produce and train on proprietary 3D models. Published peer-reviewed research at SciPy 2025.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publications -->
+  <div class="cv-section">
+    <div class="cv-section-title">Publications</div>
+    <div class="pub-entry">
+      <div class="pub-title">Performing Object Detection on Drone Orthomosaics with Meta's Segment Anything Model (SAM)</div>
+      <div class="pub-meta">
+        Proceedings of the 24th Python in Science Conference (SciPy 2025) ·
+        <a href="https://doi.org/10.25080/uhje9464" target="_blank">doi:10.25080/uhje9464</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Open-Source Projects -->
+  <div class="cv-section">
+    <div class="cv-section-title">Open-Source Projects</div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span class="cv-entry-org">Upskilled Harness</span>
+        <span class="cv-entry-dates">2024 – Present</span>
+      </div>
+      <div class="cv-entry-body">
+        <p>Author and primary maintainer of a full-stack agentic harness implementing 11 orchestrated subsystems — from CLI entry point through multi-model inference, novelty-gated research, evaluation loops, persistent memory, and structured observability. Written in Python and TypeScript. Runs entirely on local hardware; no external API keys required. Empirically validated over 1,500 logged production runs.</p>
+        <ul>
+          <li><code>harness/agent.py</code> — Core research agent: plan → search → synthesize → evaluate → persist</li>
+          <li><code>harness/wiggum.py</code> — Producer–evaluator separation loop with six-dimension rubric</li>
+          <li><code>harness/orchestrator.py</code> — DAG-based multi-subtask decomposition with parallel execution and Kahn's cycle detection</li>
+          <li><code>harness/inference.py</code> — Unified inference shim routing to Ollama, vLLM, and llama.cpp</li>
+          <li><code>harness/memory.py</code> — Dual-backend memory store (ChromaDB + SQLite FTS5) with novelty gating</li>
+          <li><code>harness/mcp_server.py</code> — Model Context Protocol server exposing harness capabilities as tools</li>
+          <li><code>dashboard/</code> — React 18 / TypeScript live monitoring dashboard with WebSocket run streaming</li>
+          <li><code>harness/skills/</code> — Skills ecosystem: <code>/lit-review</code>, <code>/browser</code>, <code>/email</code>, <code>/github</code>, <code>/deck</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span class="cv-entry-org">Upskilled Platform</span>
+        <span class="cv-entry-dates">2023 – Present</span>
+      </div>
+      <div class="cv-entry-body">
+        <p>Author of the Upskilled educational platform hosting free ML and AI courses for practitioners. Courses published include: <em>Harness Engineering for AI Agents</em> (5 modules, ~12 hours); mathematics prerequisites in linear algebra, matrix algebra, calculus, and probability; and domain supplements on neural network architectures, activation functions, loss functions, optimizers, regularization, and normalization.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teaching -->
+  <div class="cv-section">
+    <div class="cv-section-title">Teaching &amp; Course Development</div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Course Author</span> &nbsp;·&nbsp; <span class="cv-entry-org">Harness Engineering for AI Agents</span></span>
+        <span class="cv-entry-dates">2025</span>
+      </div>
+      <div class="cv-entry-body">
+        <p>Five-module intermediate course covering pipeline architecture, context engineering and memory, verification and failure modes, production systems, and self-improvement. Published at upskilled.consulting/harness-engineering.</p>
+        <ul class="module-list">
+          <li><span class="module-id">Module 1</span> The Harness Thesis — pipeline architecture, experimental methodology, model role separation</li>
+          <li><span class="module-id">Module 2</span> Context Engineering &amp; Memory — planning, dual-search, saturation gating, persistent memory</li>
+          <li><span class="module-id">Module 3</span> Verification &amp; Failure Modes — Wiggum loop, evaluation rubric, failure taxonomy</li>
+          <li><span class="module-id">Module 4</span> Production Systems — skills hook system, orchestration, security layer, observability</li>
+          <li><span class="module-id">Module 5</span> Self-Improvement — data flywheel, SFT/DPO dataset generation, QLoRA fine-tuning, literature review pipeline</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Lead / Senior Data Science Instructor</span> &nbsp;·&nbsp; <span class="cv-entry-org">Flatiron School</span></span>
+        <span class="cv-entry-dates">June 2022 – September 2023</span>
+      </div>
+      <div class="cv-entry-body">
+        <p>Taught the first Deloitte AI Academy cohort in the U.S.; earned a customer satisfaction score of 93.3%. Co-designed a 40-hour data analytics curriculum for Transatlantic Reinsurance Company (TransRe) and taught the curriculum to a live cohort in New York; earned a customer satisfaction score of 100%. Designed a month-long curriculum module for performing ML on AWS; helped students develop Python data manipulation skills and apply transfer learning to Computer Vision and NLP tasks.</p>
+      </div>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Teaching Assistant / Tutor</span> &nbsp;·&nbsp; <span class="cv-entry-org">UC Berkeley Extension</span></span>
+        <span class="cv-entry-dates">February 2020 – December 2020</span>
+      </div>
+      <div class="cv-entry-body">
+        Co-lectured to Data Analytics and Visualization Bootcamp students on topics ranging from machine learning to interactive data visualizations using D3.js; taught and/or tutored 100+ students, remotely and in-person.
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Experience -->
+  <div class="cv-section">
+    <div class="cv-section-title">Additional Experience</div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Product Data Scientist / Full-Stack Engineer</span> &nbsp;·&nbsp; <span class="cv-entry-org">MOPO Life</span></span>
+        <span class="cv-entry-dates">August 2020 – June 2021</span>
+      </div>
+      <div class="cv-entry-body">
+        Helped a social media startup work past the Cold Start problem; managed two capstone teams of SFSU graduate students working on Computer Vision and NLP business problems; worked cross-collaboratively with API and DevOps teams to merge features into production codebase; crafted logic for a hybrid recommender system.
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical Areas -->
+  <div class="cv-section">
+    <div class="cv-section-title">Selected Technical Areas</div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Agentic Systems</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Producer/evaluator separation</span>
+        <span class="skill-tag">DAG-based orchestration</span>
+        <span class="skill-tag">Skill hook systems</span>
+        <span class="skill-tag">MCP interoperability</span>
+        <span class="skill-tag">Local inference (Ollama · vLLM · llama.cpp)</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Evaluation &amp; Context Engineering</div>
+      <div class="skill-tags">
+        <span class="skill-tag">LLM-as-a-Judge calibration</span>
+        <span class="skill-tag">Multi-dimension rubrics</span>
+        <span class="skill-tag">Evaluator pool rotation</span>
+        <span class="skill-tag">Novelty-gated search</span>
+        <span class="skill-tag">Dual-backend memory retrieval</span>
+        <span class="skill-tag">Semantic chunking</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Self-Improving Systems</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Data flywheel design</span>
+        <span class="skill-tag">SFT &amp; DPO dataset extraction</span>
+        <span class="skill-tag">QLoRA fine-tuning</span>
+        <span class="skill-tag">Reward hacking detection</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Security &amp; Observability</div>
+      <div class="skill-tags">
+        <span class="skill-tag">AST-level code scanning</span>
+        <span class="skill-tag">Path sandboxing</span>
+        <span class="skill-tag">Prompt injection detection</span>
+        <span class="skill-tag">SSRF prevention</span>
+        <span class="skill-tag">Chrome Trace / Perfetto integration</span>
+        <span class="skill-tag">WebSocket dashboards</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Computer Vision &amp; Spatial</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Photogrammetry</span>
+        <span class="skill-tag">3D Gaussian Splatting</span>
+        <span class="skill-tag">Drone orthomosaic analysis</span>
+        <span class="skill-tag">Segment Anything Model (SAM)</span>
+        <span class="skill-tag">Transfer learning</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-label">Languages &amp; Frameworks</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">React 18</span>
+        <span class="skill-tag">FastAPI</span>
+        <span class="skill-tag">SQLite FTS5</span>
+        <span class="skill-tag">ChromaDB</span>
+        <span class="skill-tag">Playwright</span>
+        <span class="skill-tag">D3.js</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Education -->
+  <div class="cv-section">
+    <div class="cv-section-title">Education</div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">Professional Certificate, Data Analytics and Visualization</span> &nbsp;·&nbsp; <span class="cv-entry-org">UC Berkeley Extension</span></span>
+        <span class="cv-entry-dates">2019</span>
+      </div>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <span><span class="cv-entry-role">BS Business Administration (Real Estate Finance) &amp; BS Community Development</span> &nbsp;·&nbsp; <span class="cv-entry-org">Portland State University</span></span>
+        <span class="cv-entry-dates">2013 – 2015</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggested Reviewers -->
+  <div class="cv-section">
+    <div class="cv-section-title">Suggested Expert Reviewers</div>
+    <table class="reviewer-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Affiliation</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Peter Steinberger</td>
+          <td>OpenAI</td>
+          <td><a href="mailto:peter@steipete.me">peter@steipete.me</a></td>
+        </tr>
+        <tr>
+          <td>Philipp Schmid</td>
+          <td>Google DeepMind</td>
+          <td><a href="mailto:schmidphillipp1995@gmail.com">schmidphillipp1995@gmail.com</a></td>
+        </tr>
+        <tr>
+          <td>Sebastian Raschka</td>
+          <td>Lightning AI</td>
+          <td><a href="mailto:mail@sebastianraschka.com">mail@sebastianraschka.com</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chapter-footer">
+    <strong>Contact.</strong> For speaking engagements, review requests, or manuscript enquiries: <a href="mailto:nick@upskilled.consulting">nick@upskilled.consulting</a>.
+  </div>
+
+  <a class="back-link" href="index.html">← Back to book page</a>
+
+</div><!-- /page-wrap -->
+</body>
+</html>
