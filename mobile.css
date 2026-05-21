@@ -1,0 +1,153 @@
+/* ─── Shared mobile/responsive overrides ─────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Backstop: nothing should ever widen the page past the viewport */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+/* ── 768px — tablet / large phone ───────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Utility bar: drop the My Account / Librarians / Authors / Contact row */
+  .util-bar-links { display: none; }
+  .util-bar-inner  { padding: 5px 16px; }
+
+  /* Site nav: keep logo + first two links (Books, Journals) */
+  .nav-inner { padding: 0 16px; gap: 16px; height: 50px; }
+  .nav-links a:nth-child(n+3) { display: none; }
+  .nav-links { gap: 16px; }
+
+  /* Breadcrumb */
+  .breadcrumb-inner { padding: 8px 16px; font-size: 12px; }
+
+  /* ── Page containers ── */
+  .chapter-wrap   { padding: 28px 16px 56px; }
+  .intro-wrap,
+  .toc-wrap,
+  .author-wrap    { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* Index page hero / section bands */
+  .hero-inner,
+  .section-inner,
+  .book-header-inner { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* ── Headings ── */
+  h1 { font-size: 26px !important; line-height: 1.2; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+  .chapter-subtitle { font-size: 16px; }
+
+  /* ── Code blocks ──────────────────────────────────────────────── */
+  /* max-width constrains the pre to the viewport; overflow-x gives it
+     its own horizontal scroll lane instead of blowing out the page. */
+  pre.code-block {
+    font-size: 12px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100vw - 32px);
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  /* ── Monospace diagram / score-table blocks ── */
+  .diagram,
+  .score-table {
+    font-size: 11px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* ── Data tables: block + overflow gives horizontal swipe ── */
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100vw - 32px);
+    font-size: 13px;
+  }
+
+  /* ── D3 / SVG diagram containers ── */
+  #wiggum-loop-diagram,
+  #coord-gap-diagram,
+  #run-timeline,
+  [id$="-diagram"] {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* ── Pattern meta table (chapter pages) ── */
+  .pattern-meta      { font-size: 13px; }
+  .pattern-meta td   { padding: 10px 12px; }
+
+  /* ── Callout / summary boxes ── */
+  .summary-box,
+  .cliffhanger,
+  .aside-note { padding: 14px 14px; font-size: 14px; }
+
+  /* ── Chapter meta strip ── */
+  .chapter-meta { font-size: 12px; gap: 10px; }
+
+  /* ── Eyebrow / pill row ── */
+  .eyebrow { flex-wrap: wrap; gap: 6px; }
+
+  /* ── Index page: tab bar ── */
+  /* Let the tab bar scroll horizontally rather than wrap or clip */
+  .tabs-inner {
+    padding: 0 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar visually while keeping it functional */
+    scrollbar-width: none;
+  }
+  .tabs-inner::-webkit-scrollbar { display: none; }
+  .tab { padding: 12px 14px; font-size: 12.5px; white-space: nowrap; }
+
+  /* ── Index page: spec table ── */
+  .spec-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* ── Index page: book-detail grid ── */
+  /* Grid items must declare min-width:0 or they expand past their track */
+  .book-detail { padding: 24px 16px 20px; gap: 20px; }
+  .book-detail > * { min-width: 0; }
+  .book-info { overflow: hidden; }
+
+  /* KPI row: wrap the four stats onto two rows on narrow screens */
+  .kpi-row { flex-wrap: wrap; gap: 16px 24px; }
+  .kpi-item { min-width: 80px; }
+  .kpi-divider { display: none; }
+
+  /* Search bar in index nav: shrink or hide on mobile */
+  .nav-search { width: 160px; }
+
+  /* Purchase card: don't fix-position on mobile */
+  .book-purchase { position: static; }
+
+  /* ── Footer ── */
+  .footer-main,
+  .site-footer-inner { flex-direction: column; gap: 12px; }
+  .footer-col { min-width: unset !important; }
+}
+
+/* ── 480px — small phone ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Logo only — no room for even Books / Journals */
+  .nav-links { display: none; }
+
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 18px; }
+
+  pre.code-block  { font-size: 11.5px; }
+  .diagram,
+  .score-table    { font-size: 10.5px; }
+}
