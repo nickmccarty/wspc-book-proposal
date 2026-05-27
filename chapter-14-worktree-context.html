@@ -146,6 +146,160 @@
       border-radius: 3px;
       color: var(--wspc-red);
     }
+
+    /* ── Print ─────────────────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 22mm 20mm 26mm 25mm;
+      }
+
+      /* Hide all navigation chrome */
+      .util-bar,
+      .site-nav,
+      .breadcrumb,
+      .back-link { display: none !important; }
+
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 10.5pt;
+        line-height: 1.65;
+        color: #000;
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .chapter-wrap {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* Chapter header */
+      .chapter-eyebrow { font-size: 8.5pt; margin-bottom: 6pt; }
+      .pattern-id { font-size: 8.5pt; }
+      .chapter-heading { font-size: 22pt; line-height: 1.2; margin-bottom: 4pt; }
+      .chapter-sub { font-size: 13pt; margin-bottom: 10pt; }
+      .chapter-meta {
+        font-size: 9pt;
+        margin-bottom: 16pt;
+        padding-bottom: 10pt;
+        gap: 16pt;
+      }
+
+      /* Prose */
+      .prose p { font-size: 10.5pt; line-height: 1.65; margin-bottom: 8pt; }
+      .prose h2 {
+        font-size: 13.5pt;
+        margin: 22pt 0 7pt;
+        padding-bottom: 4pt;
+        page-break-after: avoid;
+      }
+      .prose h3 {
+        font-size: 11pt;
+        margin: 14pt 0 5pt;
+        page-break-after: avoid;
+      }
+      .prose hr { margin: 18pt 0; }
+      .prose code { font-size: 9pt; background: #f4f4f4; }
+      .prose ul, .prose ol { margin: 5pt 0 12pt; }
+      .prose li { font-size: 10.5pt; margin-bottom: 3pt; }
+
+      /* Opening prose block */
+      .prose p:first-of-type { margin-top: 0; }
+
+      /* Pattern meta table */
+      .pattern-meta {
+        margin: 14pt 0 20pt;
+        page-break-inside: avoid;
+      }
+      .pattern-meta-label { font-size: 8.5pt; padding: 7pt 10pt; }
+      .pattern-meta-value { font-size: 10pt; padding: 7pt 10pt; }
+
+      /* Code blocks — invert dark theme to print-safe light */
+      pre.code-block {
+        background: #f6f6f6 !important;
+        color: #111 !important;
+        border: 1px solid #ccc;
+        font-size: 8.5pt;
+        line-height: 1.5;
+        padding: 10pt 12pt;
+        border-radius: 3pt;
+        page-break-inside: avoid;
+      }
+      pre.code-block .cm { color: #777 !important; font-style: italic; }
+      pre.code-block .kw { color: #1a1a6e !important; font-weight: 700; }
+      pre.code-block .fn { color: #1a4080 !important; }
+      pre.code-block .st { color: #256625 !important; }
+      pre.code-block .nm { color: #7a3300 !important; }
+
+      /* ASCII diagram boxes */
+      .diagram {
+        font-size: 8pt;
+        padding: 10pt 12pt;
+        page-break-inside: avoid;
+        background: #f9f9f9 !important;
+      }
+
+      /* D3 coordination diagram */
+      #coordination-diagram {
+        page-break-inside: avoid;
+        margin: 12pt 0 16pt;
+      }
+      #coordination-diagram svg { max-width: 100%; height: auto; }
+
+      /* Consequences grid */
+      .consequences {
+        gap: 12pt;
+        margin: 10pt 0 18pt;
+        page-break-inside: avoid;
+      }
+      .consequence-col { padding: 10pt 12pt; }
+      .consequence-col h4 { font-size: 8.5pt; margin-bottom: 8pt; }
+      .consequence-col ul { font-size: 10pt; }
+      .consequence-col li { margin-bottom: 5pt; }
+
+      /* Related patterns */
+      .related-list { margin: 8pt 0 16pt; }
+      .related-item { font-size: 10pt; padding: 7pt 0; }
+      .related-ref { font-size: 10pt; min-width: 160pt; }
+      .related-desc { font-size: 10pt; }
+
+      /* Summary and cliffhanger callouts */
+      .summary-box,
+      .cliffhanger {
+        font-size: 10pt;
+        padding: 12pt 16pt;
+        margin: 14pt 0;
+        page-break-inside: avoid;
+      }
+
+      /* Mathematical note */
+      .math-note {
+        padding: 12pt 16pt 10pt;
+        margin: 20pt 0 16pt;
+        background: #fafbff !important;
+        page-break-inside: avoid;
+      }
+      .math-note-title { font-size: 8.5pt; margin-bottom: 10pt; }
+      .math-note-body { font-size: 10pt; line-height: 1.65; margin-bottom: 7pt; }
+      .math-note-body code { font-size: 8.5pt; }
+
+      /* Chapter footer */
+      .chapter-footer {
+        margin-top: 28pt;
+        padding-top: 12pt;
+        font-size: 9pt;
+      }
+
+      /* Global page-break rules */
+      h1, h2, h3 { page-break-after: avoid; }
+      p { orphans: 3; widows: 3; }
+      pre, .diagram, .pattern-meta, .consequences,
+      .math-note, .summary-box, .cliffhanger,
+      #coordination-diagram { page-break-inside: avoid; }
+    }
   </style>
   <link rel="stylesheet" href="mobile.css">
 </head>
@@ -196,17 +350,17 @@
 
   <div class="prose">
 
-    <p>The first time you run five research agents in parallel without worrying about state isolation, the failure mode is so mundane it takes a moment to understand what happened.</p>
+    <p>The first production implementation of parallel agent orchestration in this harness ran 43 logged tasks before a problem was detected — and only then because a spot-check revealed a discrepancy at run 61. Eighteen runs had passed evaluation with a hidden defect.</p>
 
-    <p>Three of the agents finish close together. They each call <code>write_output()</code>, each targeting a filename derived from the task string, and since they are all variants of the same parent task, two of them hash to the same path. The last writer wins. The third agent's output — eighteen minutes of inference, three Wiggum evaluation rounds, a final score of 8.4 — is silently overwritten. The run log shows three completions. The filesystem shows one file.</p>
+    <p>The failure is this: when two research agents working on related subtasks both derive their output filenames from a hash of the task string, the filenames collide. The second writer overwrites the first. The run log shows two completions. The filesystem shows one file.</p>
 
-    <p>You do not notice immediately. The assembly model reads the available outputs and synthesizes them into a cross-reference document that looks, on the surface, like a complete multi-perspective analysis. It is not. It is a two-perspective analysis presented in a three-perspective frame, with the third slot filled by the assembly model's own synthesis of the two it could see. The output passes Wiggum evaluation. It gets a 8.2. It goes into <code>runs.jsonl</code> as a PASS.</p>
+    <p>The assembly model reads the available outputs and produces a document that looks, on the surface, like a complete multi-perspective synthesis. It is not. The evaluator scores it, and it passes — because the evaluator cannot detect the absence of content it never saw. The run goes into <code>runs.jsonl</code> as a PASS.</p>
 
-    <p>This is not a crash. There is no stack trace. The pipeline reports success and it is wrong.</p>
+    <p>There is no crash. There is no warning. There is no indication that anything went wrong.</p>
 
-    <p>Shared mutable state in concurrent agent execution is one of the few failure modes in this architecture that does not surface through the quality evaluation system, because the evaluator cannot know that content is missing — only that what is present is adequate. That makes it the most dangerous kind of failure: silent, plausible-looking, and repeatable.</p>
+    <p>This is one of the few failure modes in the architecture that does not surface through the quality evaluation system, because the evaluator can only assess what is present, not what is missing. That makes it the most dangerous kind: silent, plausible-looking, and repeatable across every subsequent parallel run until the root cause is diagnosed.</p>
 
-    <p>This chapter describes the pattern that fixes it.</p>
+    <p>The fix is forty lines of code. The problem is that you have to know to look for it. This chapter describes the pattern that makes the failure structurally impossible.</p>
 
     <hr>
 
@@ -476,7 +630,7 @@ git worktree prune</pre>
         .text(t + 'min');
     });
 
-    // Draw each lane
+    // ── Pass 1: tracks, bars, labels, completion ticks (no badges yet) ──
     const wtBoxX = TL_X + TL_W + 10, wtBoxW = 54, wtCX = wtBoxX + wtBoxW / 2;
     lanes.forEach((lane, i) => {
       const ly = TL_Y + i * lu;
@@ -503,7 +657,39 @@ git worktree prune</pre>
           .attr('x2', ex).attr('y2', ly + lH)
           .attr('stroke', lane.color).attr('stroke-width', 2);
       }
-      // Worktree badge (right)
+    });
+
+    // ── Assembly phase coordinates ───────────────────────────────
+    const assY = tickY + 40;       // 284
+    const assX = TL_X + TL_W / 2; // 357 — centred on timeline
+
+    // ── Assembly stub lines drawn BEFORE badge boxes so boxes paint on top ──
+    const trunkX = wtCX;
+    const trunkTopY = TL_Y + lH - 7;
+    const trunkBotY = assY - 12;
+    svg.append('line').attr('x1', trunkX).attr('y1', trunkTopY)
+      .attr('x2', trunkX).attr('y2', trunkBotY)
+      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+
+    lanes.forEach((lane, i) => {
+      const ly = TL_Y + i * lu;
+      const barBotY = ly + lH - 7;
+      svg.append('line').attr('x1', wtBoxX + wtBoxW/2).attr('y1', barBotY + 4)
+        .attr('x2', wtBoxX + wtBoxW/2).attr('y2', trunkBotY)
+        .attr('stroke', lane.dim ? LGRAY : lane.color).attr('stroke-width', 1)
+        .attr('stroke-dasharray', lane.dim ? '3,2' : null);
+    });
+
+    svg.append('line').attr('x1', trunkX).attr('y1', trunkBotY)
+      .attr('x2', assX).attr('y2', trunkBotY)
+      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+    svg.append('line').attr('x1', assX).attr('y1', trunkBotY)
+      .attr('x2', assX).attr('y2', assY)
+      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('marker-end', 'url(#arr-gray)');
+
+    // ── Pass 2: worktree badge boxes drawn on top of all lines ──────
+    lanes.forEach((lane, i) => {
+      const ly = TL_Y + i * lu;
       svg.append('rect').attr('x', wtBoxX).attr('y', ly + 7)
         .attr('width', wtBoxW).attr('height', lH - 14).attr('rx', 2)
         .attr('fill', WHITE).attr('stroke', lane.dim ? BORDER : lane.color)
@@ -573,7 +759,7 @@ git worktree prune</pre>
     // eliminating the squeeze against the A5 bar.
     const wasteX1 = a3x, wasteX2 = xS(18);
     svg.append('rect').attr('x', wasteX1).attr('y', a7y + 5)
-      .attr('width', wasteX2 - wasteX1).attr('height', lH - 10)
+      .attr('width', wasteX2 - wasteX1).attr('height', lH - 15)
       .attr('rx', 2).attr('fill', 'none')
       .attr('stroke', RED).attr('stroke-width', 1.5).attr('stroke-dasharray', '4,2');
 
@@ -586,46 +772,20 @@ git worktree prune</pre>
       .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', RED)
       .attr('font-weight', '700').text('↑ 6 min of redundant / contradictory work');
 
-    // ── Assembly phase ──────────────────────────────────────────
-    const assY = tickY + 40;          // 284
-    const assX = TL_X + TL_W / 2;    // 357 — centred on timeline
-
-    // Stub lines from each worktree box bottom → down → gather → assembly
-    const trunkX = wtCX;             // 537
-    const trunkTopY = TL_Y + lH - 7; // first lane bar bottom area
-    const trunkBotY = assY - 12;
-    svg.append('line').attr('x1', trunkX).attr('y1', trunkTopY)
-      .attr('x2', trunkX).attr('y2', trunkBotY)
-      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
-
-    lanes.forEach((lane, i) => {
-      const ly = TL_Y + i * lu;
-      const barBotY = ly + lH - 7;
-      svg.append('line').attr('x1', wtBoxX + wtBoxW/2).attr('y1', barBotY + 4)
-        .attr('x2', wtBoxX + wtBoxW/2).attr('y2', trunkBotY)
-        .attr('stroke', lane.dim ? LGRAY : lane.color).attr('stroke-width', 1)
-        .attr('stroke-dasharray', lane.dim ? '3,2' : null);
-    });
-
-    // Horizontal gather from trunk to assembly, then arrow down
-    svg.append('line').attr('x1', trunkX).attr('y1', trunkBotY)
-      .attr('x2', assX).attr('y2', trunkBotY)
-      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
-    svg.append('line').attr('x1', assX).attr('y1', trunkBotY)
-      .attr('x2', assX).attr('y2', assY)
-      .attr('stroke', LGRAY).attr('stroke-width', 1).attr('marker-end', 'url(#arr-gray)');
-
     // Assembly box
-    const aW = 188, aH = 40;
+    const aW = 188, aH = 52;
     svg.append('rect').attr('x', assX - aW/2).attr('y', assY)
       .attr('width', aW).attr('height', aH)
       .attr('rx', 4).attr('fill', NAVY).attr('opacity', 0.9);
-    svg.append('text').attr('x', assX).attr('y', assY + 16)
+    svg.append('text').attr('x', assX).attr('y', assY + 15)
       .attr('text-anchor', 'middle').attr('fill', WHITE)
       .attr('font-size', 11).attr('font-weight', '700').text('Assembly Model');
-    svg.append('text').attr('x', assX).attr('y', assY + 30)
+    svg.append('text').attr('x', assX).attr('y', assY + 29)
       .attr('text-anchor', 'middle').attr('fill', 'rgba(255,255,255,0.75)')
-      .attr('font-size', 9.5).text('synthesises all outputs — cannot detect contradiction');
+      .attr('font-size', 9.5).text('synthesises all outputs —');
+    svg.append('text').attr('x', assX).attr('y', assY + 42)
+      .attr('text-anchor', 'middle').attr('fill', 'rgba(255,255,255,0.75)')
+      .attr('font-size', 9.5).text('cannot detect contradiction');
 
     // ── Legend ──────────────────────────────────────────────────
     // FIX: spacing 210→182 so third item stays well within the 760px viewBox.
@@ -658,43 +818,51 @@ git worktree prune</pre>
     <div class="math-note-title">Mathematical Note — The Isolation Property and the Coordination Gap</div>
 
     <p class="math-note-body">
-      Let \(S = \{s_1, s_2, \ldots, s_n\}\) be the set of concurrent subtasks dispatched by the orchestrator, and let \(\mathcal{W}(s_i)\) denote the working tree provisioned for subtask \(s_i\). The <strong>isolation property</strong> guaranteed by the Worktree Context is:
+      Let \(S = \{s_1, s_2, \ldots, s_n\}\) be the set of concurrent subtasks dispatched by the orchestrator, and let \(\mathcal{W}(s_i)\) denote the <em>working tree</em> provisioned for subtask \(s_i\) — the isolated directory tree in which \(s_i\) writes all output files, memory databases, and research caches. The <strong>isolation property</strong> guaranteed by the Worktree Context is:
     </p>
     <div class="math-display">
       \[ \mathcal{W}(s_i) \cap \mathcal{W}(s_j) = \emptyset \quad \forall\, i \neq j \]
     </div>
     <p class="math-note-body">
-      This eliminates all shared-state race conditions: no write in \(\mathcal{W}(s_i)\) can affect any read in \(\mathcal{W}(s_j)\). The property is exact — it holds for output files, memory databases, and research caches alike, because all file operations resolve relative to the worktree root.
+      Read: the working trees of any two distinct subtasks are disjoint sets — they share no files. This eliminates all shared-state race conditions: no write in \(\mathcal{W}(s_i)\) can affect any read in \(\mathcal{W}(s_j)\). The property holds for output files, memory databases, and research caches alike, because all file operations resolve relative to the worktree root.
     </p>
 
     <p class="math-note-body">
-      The isolation property is, however, precisely the source of the coordination gap. Define the <strong>semantic overlap</strong> between two subtasks as the mutual information between their task descriptions:
+      The isolation property is, however, precisely the source of the coordination gap. Let \(\text{desc}(s_i)\) denote the natural-language task string passed to subtask \(s_i\) by the orchestrator — the string the planner generated to describe \(s_i\)'s specific research objective. Define the <strong>semantic overlap</strong> between two subtasks as the mutual information between their task strings:
     </p>
     <div class="math-display">
       \[ \Omega(s_i, s_j) = I\!\left(\,\text{desc}(s_i)\,;\,\text{desc}(s_j)\,\right) \]
     </div>
     <p class="math-note-body">
-      Under worktree isolation, the information available to \(s_j\) during execution is independent of any output produced by \(s_i\), regardless of \(\Omega\):
+      Mutual information \(I(X\,;\,Y)\) measures how much knowing \(X\) reduces uncertainty about \(Y\), and vice versa — formally, \(I(X\,;\,Y) = H(X) - H(X \mid Y)\), where \(H(\cdot)\) is Shannon entropy (the expected number of bits needed to represent a random variable). When \(\Omega(s_i, s_j)\) is high, the two subtasks are asking overlapping questions; when it is zero, their objectives are statistically independent.
+    </p>
+
+    <p class="math-note-body">
+      Let \(\text{out}(s_i)\) denote the synthesis document produced by subtask \(s_i\) upon completion, and let \(\text{process}(s_j)\) denote the full execution trace of \(s_j\) — the sequence of search queries issued, documents retrieved, and synthesis calls made during \(s_j\)'s run. Under worktree isolation, the information available to \(s_j\) during execution is independent of any output produced by \(s_i\), regardless of \(\Omega\):
     </p>
     <div class="math-display">
       \[ I\!\left(\,\text{out}(s_i)\,;\,\text{process}(s_j)\,\right) = 0 \quad \text{even when } \Omega(s_i, s_j) > 0 \]
     </div>
     <p class="math-note-body">
-      When \(s_i\) completes before \(s_j\) and \(\Omega > 0\), there is an unrealized <strong>informational opportunity cost</strong> — the reduction in \(s_j\)'s uncertainty about its task that \(s_i\)'s output could have provided, but cannot:
+      That is: no matter how much the two task descriptions overlap, \(s_j\)'s execution contains zero information about \(s_i\)'s output — because the working trees are disjoint and no communication channel exists between running subtasks.
+    </p>
+
+    <p class="math-note-body">
+      When \(s_i\) completes before \(s_j\) and \(\Omega > 0\), there is an unrealized <strong>informational opportunity cost</strong> — the reduction in \(s_j\)'s remaining uncertainty about its objective that \(s_i\)'s output could have provided, but cannot under isolation:
     </p>
     <div class="math-display">
       \[ C(s_j \mid s_i) = H\!\left(\text{desc}(s_j)\right) - H\!\left(\text{desc}(s_j) \mid \text{out}(s_i)\right) \geq 0 \]
     </div>
     <p class="math-note-body">
-      In the A3/A7 example: \(\Omega > 0\) (both subtasks concern inference backend selection), A3 completes at \(t = 12\), and A7 runs until \(t = 18\) without access to A3's conclusion. The six wasted minutes are a direct consequence of \(C(s_{A7} \mid s_{A3}) > 0\) combined with zero information flow.
+      Here \(H(\text{desc}(s_j))\) is the entropy of \(s_j\)'s task string — a measure of how much is initially unknown about \(s_j\)'s research objective before any work is done. \(H(\text{desc}(s_j) \mid \text{out}(s_i))\) is the conditional entropy remaining after \(s_i\)'s output is observed: how much would still be unknown about \(s_j\)'s objective even if \(s_j\) had access to what \(s_i\) produced. The difference equals \(I(\text{out}(s_i)\,;\,\text{desc}(s_j))\) — the mutual information between \(s_i\)'s output and \(s_j\)'s task — which is always non-negative by the properties of entropy. It represents the portion of \(s_j\)'s search effort that \(s_i\)'s output could have rendered redundant. Worktree isolation does not cause this cost; it makes the cost exact and unavoidable. Without isolation, the overlap manifests as a race condition. With isolation, it manifests as duplicated inference.
     </p>
 
     <p class="math-note-body">
-      The <strong>cycle detection</strong> check (Kahn's algorithm, §Implementation) runs in \(O(V + E)\) time, where \(V = |S|\) is the number of subtasks and \(E\) is the number of dependency edges in the DAG. For the typical harness workload (\(|S| \leq 16\), sparse \(E\)), this is negligible relative to inference time, which justifies running it eagerly before any worktree is provisioned.
+      The <strong>cycle detection</strong> check validates that the dependency graph submitted by the planner is a <em>directed acyclic graph</em> (DAG) — a graph in which edges represent "must complete before" relationships and no sequence of edges leads back to its starting node, so no subtask circularly depends on itself. Kahn's algorithm resolves this by repeatedly removing subtasks with no remaining dependencies until the graph is empty (success) or a non-empty remainder is detected (cycle found). It runs in \(O(V + E)\) time, where \(V = |S|\) is the number of subtask nodes in the graph and \(E\) is the number of directed dependency edges. For the typical harness workload (\(|S| \leq 16\), \(E\) sparse — most subtasks declare no explicit dependencies), this is negligible relative to inference time, which justifies running it eagerly before any worktree is provisioned.
     </p>
 
     <p class="math-note-body">
-      Finally, note that the assembly model receives \(\{\,\text{out}(s_i)\,\}_{i=1}^n\) without knowledge of \(\Omega\). Its synthesis quality is bounded by its ability to detect and resolve contradictions that arise when \(\Omega(s_i, s_j) > 0\) and the outputs disagree — a capability that is a function of assembly prompt design (Section F, Observability) rather than the orchestration pattern itself.
+      Finally, note that the assembly model receives \(\{\,\text{out}(s_i)\,\}_{i=1}^n\) — the full set of completed subtask outputs — without knowledge of \(\Omega\). Its synthesis quality is bounded by its ability to detect and resolve contradictions that arise when \(\Omega(s_i, s_j) > 0\) and the outputs disagree — a capability that is a function of assembly prompt design rather than the orchestration pattern itself.
     </p>
   </div>
 

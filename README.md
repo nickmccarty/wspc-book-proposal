@@ -19,7 +19,7 @@ Most books about AI agents focus on prompting techniques or specific frameworks.
 The book is structured in two parts:
 
 - **Part I — The Landscape** (4 narrative chapters): what a harness is, why the field needs named patterns, the leverage concept, and a guide to reading the catalog.
-- **Part II — The Pattern Catalog** (18 chapters, 7 sections): 27 patterns from the Inference Shim to the Self-Improvement Loop.
+- **Part II — The Pattern Catalog** (18 chapters, 7 sections): 30 patterns from the Inference Shim to the Self-Improvement Loop.
 
 ---
 

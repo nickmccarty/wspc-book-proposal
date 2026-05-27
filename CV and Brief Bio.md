@@ -5,7 +5,7 @@
 
 ## Brief Bio *(for proposal cover page)*
 
-**Nicholas McCarty** is Principal Consultant at Upskilled Consulting, where he designs and deploys production agentic systems for research-intensive organizations. He is the architect of the open-source Upskilled harness — a full-stack Python and TypeScript scaffolding framework for autonomous research agents running on local hardware — and the creator of the *Harness Engineering for AI Agents* course series. His work focuses on the infrastructure layer of AI systems: the pipeline scaffolding, evaluation loops, memory architectures, and observability tooling that determine whether a capable model delivers capable results. He is based in Sacramento, California.
+**Nicholas McCarty** is Principal Consultant at Upskilled Consulting, where he designs and deploys production agentic systems for research-intensive organizations. He is the architect of the open-source Upskilled harness — a full-stack Python and TypeScript scaffolding framework for autonomous research agents running on local hardware — and the creator of the *Harness Engineering for AI Agents* course series. His work focuses on the infrastructure layer of AI systems: the pipeline scaffolding, evaluation loops, memory architectures, and observability tooling that determine whether a capable model delivers capable results. He is based in Palm Desert, California.
 
 ---
 
@@ -15,7 +15,7 @@
 Principal Consultant, Upskilled Consulting  
 nick@upskilled.consulting  
 https://upskilled.consulting  
-2108 N St., Ste. N, Sacramento, CA 95816  
+2108 N St., Ste. N, Sacramento, CA 95816 95816  
 
 ---
 
@@ -26,30 +26,10 @@ Designs and deploys agentic AI systems for research, knowledge management, and d
 
 ---
 
-### Open-Source Projects
-
-**Upskilled Harness** *(2024 – present)*  
-Author and primary maintainer of a full-stack agentic harness implementing 11 orchestrated subsystems — from CLI entry point through multi-model inference, novelty-gated research, evaluation loops, persistent memory, and structured observability. Written in Python and TypeScript. Runs entirely on local hardware; no external API keys required.
-
-Key components authored:
-- `harness/agent.py` — Core research agent: plan → search → synthesize → evaluate → persist
-- `harness/wiggum.py` — Producer–evaluator separation loop with six-dimension rubric
-- `harness/orchestrator.py` — DAG-based multi-subtask decomposition with parallel execution
-- `harness/inference.py` — Unified inference shim routing to Ollama, vLLM, and llama.cpp
-- `harness/memory.py` — Dual-backend memory store (ChromaDB + SQLite FTS5) with novelty gating
-- `harness/mcp_server.py` — Model Context Protocol server exposing harness capabilities as tools
-- `dashboard/` — React 18 / TypeScript live monitoring dashboard with WebSocket run streaming
-- `harness/skills/` — Skills ecosystem: `/lit-review`, `/browser`, `/email`, `/github`, `/deck`
-
-**Upskilled Platform** *(2023 – present)*  
-Author of the Upskilled educational platform hosting free ML and AI courses for practitioners. Courses published include: *Harness Engineering for AI Agents* (5 modules, 12 hours estimated); mathematics prerequisites in linear algebra, matrix algebra, calculus, and probability; and domain supplements on neural network architectures, activation functions, loss functions, optimizers, regularization, and normalization.
-
----
-
 ### Teaching and Course Development
 
-**Harness Engineering for AI Agents** — Upskilled Platform *(2025)*  
-Five-module intermediate course covering pipeline architecture, context engineering and memory, verification and failure modes, production systems, and self-improvement. Includes readings, quizzes, and laboratory exercises. Published at upskilled.consulting/harness-engineering.
+**Harness Engineering for AI Agents** — Upskilled Platform *(2026)*  
+Five-module intermediate course covering pipeline architecture, context engineering and memory, verification and failure modes, production systems, and self-improvement. Includes readings, quizzes, and laboratory exercises. Published at upskilled.consulting/courses.
 
 *Module 1: The Harness Thesis* — Pipeline architecture, experimental methodology, model role separation  
 *Module 2: Context Engineering & Memory* — Planning, dual-search, saturation gating, persistent memory  

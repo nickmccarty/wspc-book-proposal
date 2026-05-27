@@ -7,9 +7,9 @@ Nicholas McCarty · Upskilled Consulting
 
 ---
 
-### Preface *(~5 pp.)*
+### Introduction *(~5 pp.)*
 
-Why this book was written, who it is for, and how to use it. The preface situates the book against the current moment in AI tooling — a period in which foundation models have become commodities while the infrastructure surrounding them remains largely artisanal and undocumented. It describes the Upskilled harness as the running artifact throughout the text: every pattern in Part II is grounded in a real, publicly available codebase that readers can clone, instrument, and modify. It explains the two-part structure (narrative foundation, then pattern catalog), defines the notation used in pattern entries, and provides three suggested reading paths for different practitioner profiles.
+Why this book was written, who it is for, and how to use it. The introduction situates the book against the current moment in AI tooling — a period in which foundation models have become commodities while the infrastructure surrounding them remains largely artisanal and undocumented. It describes the Upskilled harness as the running artifact throughout the text: every pattern in Part II is grounded in a real, publicly available codebase that readers can clone, instrument, and modify. It explains the two-part structure (narrative foundation, then pattern catalog), defines the notation used in pattern entries, and provides three suggested reading paths for different practitioner profiles.
 
 ---
 
@@ -31,13 +31,19 @@ How to measure whether a harness change actually helps. This chapter introduces 
 
 ### Chapter 4: Failure Taxonomy *(~20 pp.)*
 
-Before the catalog of solutions, a catalog of problems. This chapter documents the six classes of harness failure observed across 1,500 logged runs: Retrieval Failures (search returned insufficient or misleading content), Planning Failures (the planner generated queries that missed the task's core requirement), Synthesis Failures (the producer hallucinated, hedged excessively, or lost the thread), Evaluation Failures (the evaluator scored a low-quality output above threshold), Revision Failures (the producer failed to act on dimensional feedback), and Infrastructure Failures (model timeouts, VRAM exhaustion, context overflow). For each class, the chapter gives the observed frequency, a representative `runs.jsonl` record, and a pointer to the Part II pattern that reduced its rate. This chapter is the connective tissue between the argument in Part I and the solutions in Part II.
+Before the catalog of solutions, a catalog of problems. This chapter documents the six classes of harness failure observed across 1,500 logged runs: Retrieval Failures (search returned insufficient or misleading content), Planning Failures (the planner generated queries that missed the task's core requirement), Synthesis Failures (the producer hallucinated, hedged excessively, or lost the thread), Evaluation Failures (the evaluator scored a low-quality output above threshold), Revision Failures (the producer failed to act on dimensional feedback), and Infrastructure Failures (model timeouts, VRAM exhaustion, context overflow). For each class, the chapter gives the observed frequency, a representative `runs.jsonl` record, and a pointer to the Part II pattern that reduced its rate.
+
+Retrieval Failures include a memory contamination sub-variant that is distinct from search failures: low-quality observations re-injected from the memory store crowd out diverse context. In one documented case, two copies of a 6.2-scoring run occupied two of the top-four retrieval slots, anchoring synthesis near the same quality ceiling. The fix deduplicates retrieved observations by title and applies a 0.5× quality weight to any observation scoring below 7.0 at retrieval time, so low-quality prior runs cannot displace higher-quality ones.
+
+Revision Failures include two shipped safeguards documented in this chapter. Cycling — where the producer revises but the evaluator returns identical dimensional scores, indicating zero measurable progress — is detected by comparing the full six-dimension score vector between consecutive rounds; the loop exits early rather than burning remaining revision budget. On failed-loop exit, the implementation writes the highest-scoring round's output to disk rather than the final round's, preventing regression in the 21% of multi-round runs where round-over-round scores were non-monotonic.
+
+This chapter is the connective tissue between the argument in Part I and the solutions in Part II.
 
 ---
 
 ## Part II — The Pattern Catalog *(~350 pp.)*
 
-*Twenty-five patterns organized into seven sections. Each entry follows the standard structure: a one-line intent, an "also known as" field, a how-it-works narrative, a when-to-use section, a consequences table, implementation notes with code, and cross-references to related patterns.*
+*Thirty patterns organized into seven sections. Each entry follows the standard structure: a one-line intent, an "also known as" field, a how-it-works narrative, a when-to-use section, a consequences table, implementation notes with code, and cross-references to related patterns.*
 
 ---
 
@@ -161,7 +167,7 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 ---
 
-### Section C: Verification Patterns *(~65 pp.)*
+### Section C: Verification Patterns *(~80 pp.)*
 
 *Patterns governing how output quality is measured and improved after synthesis.*
 
@@ -175,7 +181,7 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 **How it works.** `harness/wiggum.py` runs up to three evaluate–revise cycles. In each cycle, the evaluator model (never the same as the producer; see *The Model Role Separation*, A2) scores the output on six dimensions at 0.5-point resolution, producing a composite score and free-text dimensional feedback. If the composite is below 8.0, the feedback is routed to the producer as a revision prompt that highlights only the failing dimensions — not all six. Analysis of 1,500 logged runs shows that 75% of achievable quality improvement occurs in round 1, 18% in round 2, and the remainder in round 3; beyond three rounds, marginal gain falls below measurement noise. Named for the reliably imperfect Chief Wiggum of *The Simpsons*: it catches most problems, but not all.
 
-**Consequences.** Raises mean Wiggum score from 6.87 (single-pass) to 8.12 (post-loop) across the reference run set, converting 61% first-pass rate to 89% final-pass rate. Adds 15–80 seconds per evaluation round depending on output length and evaluator model. The loop's most common failure mode is revision regression — the producer improves a failing dimension while degrading a passing one. Score trajectories in `runs.jsonl` detect this as non-monotonic round-over-round scores. See Chapter 4 (Evaluation Failures, Revision Failures) for frequency data. See also: *The Dimensional Rubric* (C2), *The Surgical Compressor* (C3), *The ReAct Comparator* (C4).
+**Consequences.** Raises mean Wiggum score from 6.87 (single-pass) to 8.12 (post-loop) across the reference run set, converting 61% first-pass rate to 89% final-pass rate. Adds 15–80 seconds per evaluation round depending on output length and evaluator model. The loop's most common failure mode is revision regression — the producer improves a failing dimension while degrading a passing one; 21% of multi-round runs showed this pattern across a 57-run analysis. Score trajectories in `runs.jsonl` detect this as non-monotonic round-over-round scores. A second failure mode is cycling: the producer revises but the evaluator returns identical scores across all six dimensions, indicating the revision had no measurable effect. The loop detects cycling by comparing the full dimensional score vector between consecutive rounds and exits early rather than burning remaining revision budget on zero-progress iterations. On loop exit without a pass, the implementation writes the highest-scoring round's output to disk — not the final round's — guarding against regressions in the last round. See Chapter 4 (Evaluation Failures, Revision Failures) for frequency data. See also: *The Dimensional Rubric* (C2), *The Surgical Compressor* (C3), *The ReAct Comparator* (C4).
 
 ---
 
@@ -212,6 +218,20 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 **How it works.** The ReAct loop interleaves reasoning and action steps within a single model context: the model reasons about what to verify, issues a search or lookup action, observes the result, and updates its assessment. This is the standard evaluation approach in most published agentic frameworks. The Wiggum Loop replaces this with an external cross-model evaluation: a separate model scores a completed synthesis against a fixed rubric. The two approaches have complementary failure modes: ReAct loops fail when the evaluating model's reasoning about what to check is itself incorrect (reasoning errors compound); Wiggum loops fail when the rubric does not capture what matters for the task (rubric specification errors compound). The pattern documents the decision criteria — task type, model availability, latency constraints — and provides a diagnostic for identifying which failure mode is occurring in practice.
 
 **Consequences.** For general research synthesis with a distinct evaluator model available, the Wiggum Loop outperforms ReAct on all six rubric dimensions in the reference dataset. For code verification tasks, ReAct — where the evaluating model can execute code snippets and observe errors — outperforms rubric-based scoring. For creative tasks, neither loop is well-suited and human evaluation is necessary. This pattern is reference material; it does not introduce new code but documents the trade-off analysis that should precede any deployment decision. See also: *The Wiggum Loop* (C1), *The Dimensional Rubric* (C2).
+
+---
+
+#### Pattern C5: The Judge Calibration Guard *(~15 pp.)*
+
+**Intent.** Detect and compensate for systematic LLM evaluator failure modes — position bias, preference leakage, calibration gap, and score inflation — before they corrupt the Wiggum Loop's quality signal and produce false pass rates.
+
+**Also known as.** Evaluator Bias Checker; Calibration Anchor System; Judge Health Monitor.
+
+**How it works.** The empirical literature on LLM-as-a-Judge reliability documents four failure modes that affect production evaluation pipelines. *Calibration gap*: even the best judge models lag inter-human agreement by up to 5 points, and smaller models produce unreliable absolute scores (though usable ranking signals). *Position bias*: 8 of 9 judges in a broad study show degenerate "always-A" behavior in pairwise comparison tasks regardless of output quality; model scale does not predict stability. *Preference leakage*: when generator and judge share a model family, parent–child relationship, or training lineage, the judge systematically favors its own architecture's style (same-model, inheritance, and same-family relatedness all introduce correlated scoring priors). *Score inflation*: automated judges cannot reliably resolve disagreements between strong models — in one mathematics benchmark, the leading judge was wrong in 96.4% of expert-audited disagreements.
+
+The Calibration Guard addresses these through four complementary mechanisms. First, *cross-family evaluator selection* is enforced at `ModelConfig` construction time: the evaluator must not share a model family string with the producer (e.g., `qwen` and `qwen3` are treated as the same family). This is a hard constraint, not advisory. Second, *periodic anchor runs* execute the baseline instruction against a 50-run held-out human-rated set every 200 production runs (configurable via `HARNESS_CALIBRATION_INTERVAL`); if the evaluator's mean score on that set drifts more than 0.3 points from its initial calibration score, a recalibration alert is emitted to `data/security_events.jsonl`. Third, *conformal prediction wrappers* around Wiggum composite scores convert point estimates into calibrated score intervals — a composite of 8.2 is reported as [7.9, 8.5] at 90% coverage — making it explicit when a borderline PASS decision falls within the margin of error. Fourth, *score variance monitoring* in `runs.jsonl` analytics flags any evaluator whose per-dimension scores show zero variance over 20 consecutive runs, indicating the evaluator has frozen and is no longer providing diagnostic information.
+
+**Consequences.** The cross-family constraint reduces the evaluator pool by eliminating same-family candidates; on constrained hardware with limited model diversity, this may be difficult to satisfy. The conformal intervals are conservative — early in a deployment they are wide because few calibration runs exist — and narrow as the held-out set accumulates. The anchor run cadence adds ~2 hours of compute every 200 runs at standard throughput; this is adjustable but cannot be eliminated without losing the calibration guarantee. The pattern does not eliminate judge error; it makes the error measurable and visible. See also: *The Model Role Separation* (A2), *The Evaluator Pool* (A3), *The Wiggum Loop* (C1), *The Dimensional Rubric* (C2).
 
 ---
 
@@ -269,7 +289,7 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 ---
 
-### Section E: Security Patterns *(~50 pp.)*
+### Section E: Security Patterns *(~62 pp.)*
 
 *Patterns that constrain what the agent can do to the host system and what external content can do to the agent's memory.*
 
@@ -323,6 +343,22 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 ---
 
+#### Pattern E5: The AIBOM *(~12 pp.)*
+
+**Intent.** Maintain an AI Bill of Materials alongside the software SBOM, enumerating the model artifacts, custom Modelfiles, and cloud endpoints that constitute the other half of an agentic system's supply chain — the components that `pip freeze` cannot enumerate.
+
+**Also known as.** AI Bill of Materials; Model Supply Chain Manifest; Model Provenance Log.
+
+**How it works.** An agentic harness has three supply chain layers that a traditional SBOM covers only partially. The *software layer* (Python packages, system libraries) is fully covered by `pyproject.toml` lock files and PyPI hashes. The *runtime binary layer* (Ollama, llama.cpp, whisper.cpp, ffmpeg) is covered only for packages managed as git submodules; system-installed binaries appear nowhere in pip-managed dependency graphs. The *model layer* — local GGUF files, custom Modelfiles with baked-in system prompts, and cloud API endpoints — is entirely invisible to the software SBOM.
+
+`AIBOM.md` is committed to the repository root alongside `SBOM.json` (generated by `pip-audit` or `cyclonedx-bom`). It is structured into four sections. *Local models* list each `ollama list` entry with its manifest SHA256 prefix, parameter count, and quantization level. *Custom Modelfiles* document each `FROM` base model, the quantization, and a truncated hash of the embedded system prompt — the system prompt hash is critical because a Modelfile is not just a model; it is a model plus instructions, and the instructions can change independently of the model weights. *Cloud endpoints* list each service name, provider, and last-verified date, with an explicit warning badge: cloud models cannot be content-hashed, have no pin mechanism, and may change behavior without notice. The harness's production AIBOM lists two cloud entries: `kimi-k2.5:cloud` (Moonshot AI), which is actively wired to the autoresearch Kimi unblock path and fires after 6 consecutive discards; and `glm-5.1:cloud` (Zhipu AI), which is registered in Ollama but not currently wired to a code path. The distinction between "active" and "registered-only" dependencies is itself part of the AIBOM's value: a registered-but-inactive endpoint is still a supply chain risk if it is activated without review. *Runtime binaries* list the git submodule SHA or system package version for each non-Python executable the harness calls.
+
+The `scripts/generate_aibom.py` utility automates the local-model and Modelfile sections by calling `ollama list --json` and `ollama show --modelfile <name>` for each entry. Cloud endpoints and runtime binaries require manual maintenance. The script is run as a pre-commit hook so that new model entries trigger a review.
+
+**Consequences.** The AIBOM makes model-layer supply chain changes visible in version control: adding a new GGUF, modifying a Modelfile's system prompt, or switching a cloud endpoint all produce a diff in `AIBOM.md` that can be reviewed and approved like any other code change. The cloud endpoint section is the weakest link — it provides naming and documentation but no cryptographic guarantee; the only real mitigation for cloud endpoint risk is the multi-backend design of *The Inference Shim* (A1), which allows a cloud endpoint to be removed from `HARNESS_ENDPOINTS` in a one-line config change. The AIBOM does not replace a traditional SBOM; both are necessary for a complete supply chain picture. See also: *The Inference Shim* (A1), *The AST Guard* (E1), *The JSONL Audit Log* (F2).
+
+---
+
 ### Section F: Observability Patterns *(~35 pp.)*
 
 *Patterns that make the pipeline's operation auditable, diagnosable, and analytically tractable.*
@@ -365,7 +401,7 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 ---
 
-### Section G: Self-Improvement Patterns *(~40 pp.)*
+### Section G: Self-Improvement Patterns *(~55 pp.)*
 
 *Patterns that close the loop between pipeline outputs and model training, turning every run into a contribution to the next model generation.*
 
@@ -407,6 +443,24 @@ Before the catalog of solutions, a catalog of problems. This chapter documents t
 
 ---
 
+#### Pattern G4: The Convergence Detector *(~15 pp.)*
+
+**Intent.** Detect when the autoresearch loop has entered an unproductive stall — due to a corrupted diagnostic, an inflated baseline, or a self-defeating ban list — and intervene automatically before continued experiments exhaust the optimization budget without progress.
+
+**Also known as.** Autoresearch Health Monitor; Stall Detector; Loop Escape Circuit.
+
+**How it works.** Analysis of a 90-experiment autoresearch run on task T_B ("Search for best practices for cost envelope management in production AI agents") revealed zero advances after experiment 25, with the baseline set at 8.740 — a 75th-percentile sample against a true expected composite of approximately 8.53, making the advancement threshold systematically unreachable. The run motivates three convergence-detection mechanisms now implemented in `autoresearch.py`.
+
+*Mechanism 1: Plateau re-gather.* After 3 consecutive discards (`PLATEAU_DISCARDS = 3`), the loop re-gathers research context for the target task and resets the discard counter. The plateau is logged and the refreshed context is injected into the next proposal prompt. This addresses cases where the proposer is recycling ideas because its retrieved context has been exhausted, not because good instruction variants don't exist.
+
+*Mechanism 2: Kimi unblock.* After 6 consecutive discards (`KIMI_STUCK_THRESHOLD = 6`), the loop calls the cloud-hosted `kimi-k2.5` model for a structural reframe of the optimization problem. The Kimi response is injected into the next proposal prompt as external guidance. This escalation path handles cases where the proposer is locally stuck — the plateau re-gather has run twice without producing an advance — and a perspective outside the local model family is needed. When the guidance goes stale (another 6 discards with no advance), it is cleared and re-requested.
+
+*Mechanism 3: Cycling detection.* Within each Wiggum evaluation of an autoresearch candidate, if the composite score and all six dimensional scores match the previous round exactly, the inner loop exits early. This prevents the outer autoresearch loop from recording a "no improvement" result that is actually a measurement artifact of the evaluator producing identical output on repeated presentation of the same content.
+
+**Consequences.** These three mechanisms address stalls caused by context exhaustion, local proposal-model saturation, and evaluation noise. They do not address baseline contamination — a corrupted baseline (too high due to a high-percentile single-run sample) requires manual re-estimation or a flag to reset `--eval-n` before restarting the run. The Kimi unblock path introduces a cloud dependency; see *The AIBOM* (E5) for how this dependency is declared and audited. Each mechanism's activation is logged to `data/autoresearch_log.jsonl` with the consecutive-discard count at trigger time. See also: *The RL Rollout* (G2), *The Data Flywheel* (G1), *The JSONL Audit Log* (F2), *The Wiggum Loop* (C1).
+
+---
+
 ## Appendices *(~15 pp.)*
 
 ### Appendix A: Environment Variable Reference *(~8 pp.)*
@@ -419,7 +473,7 @@ Recommended configurations for three deployment profiles — Minimal (CPU-only o
 
 ---
 
-*Estimated total: ~455 pages*
+*Estimated total: ~497 pages*
 
 ---
 
@@ -427,9 +481,11 @@ Recommended configurations for three deployment profiles — Minimal (CPU-only o
 
 | Pattern | Section | Page |
 |---------|---------|------|
+| The AIBOM | E5 | — |
 | The AST Guard | E1 | — |
 | The CDP Guard | E4 | — |
 | The Chrome Trace Exporter | F3 | — |
+| The Convergence Detector | G4 | — |
 | The DAG Orchestrator | D1 | — |
 | The Data Flywheel | G1 | — |
 | The Dimensional Rubric | C2 | — |
@@ -437,6 +493,7 @@ Recommended configurations for three deployment profiles — Minimal (CPU-only o
 | The Evaluator Pool | A3 | — |
 | The Inference Shim | A1 | — |
 | The Injection Scanner | E3 | — |
+| The Judge Calibration Guard | C5 | — |
 | The JSONL Audit Log | F2 | — |
 | The Keep-Alive Budget | A4 | — |
 | The Literature Review Pipeline | G3 | — |

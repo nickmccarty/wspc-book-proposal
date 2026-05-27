@@ -137,6 +137,129 @@
 
     /* Sample chapter call-out */
     .sample-badge { font-size: 11px; font-weight: 700; color: var(--wspc-red); background: #fdecea; border: 1px solid #f5c6c0; border-radius: 3px; padding: 1px 7px; margin-left: 8px; white-space: nowrap; }
+
+    /* ── Print ─────────────────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 22mm 20mm 26mm 25mm;
+      }
+
+      .util-bar,
+      .site-nav,
+      .breadcrumb,
+      .jump-nav,
+      .back-link { display: none !important; }
+
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 10.5pt;
+        line-height: 1.65;
+        color: #000;
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page-wrap {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* Header */
+      .chapter-eyebrow { font-size: 8.5pt; margin-bottom: 6pt; }
+      .chapter-heading { font-size: 22pt; line-height: 1.2; margin-bottom: 4pt; }
+      .chapter-sub { font-size: 13pt; margin-bottom: 10pt; }
+      .chapter-meta {
+        font-size: 9pt;
+        margin-bottom: 18pt;
+        padding-bottom: 10pt;
+        gap: 16pt;
+      }
+
+      /* Part headers */
+      .part-header {
+        margin: 20pt 0 4pt;
+        padding-bottom: 7pt;
+        page-break-after: avoid;
+      }
+      .part-eyebrow { font-size: 8.5pt; }
+      .part-title { font-size: 15pt; }
+      .part-pages { font-size: 9pt; }
+      .part-desc { font-size: 10pt; margin-top: 5pt; }
+
+      /* Section headers */
+      .section-header { margin: 14pt 0 10pt; page-break-after: avoid; }
+      .section-id { font-size: 8.5pt; }
+      .section-title { font-size: 13pt; }
+      .section-pages { font-size: 9pt; }
+      .section-desc { font-size: 10pt; margin-top: 4pt; }
+
+      /* Chapter entries (Part I) */
+      .chapter-entry {
+        margin-bottom: 8pt;
+        border-radius: 2pt;
+        page-break-inside: avoid;
+      }
+      .chapter-entry-header { padding: 8pt 10pt; }
+      .chapter-num { font-size: 8.5pt; }
+      .chapter-name { font-size: 12pt; }
+      .page-count { font-size: 9pt; }
+      .chapter-entry-body { padding: 8pt 10pt; font-size: 10pt; line-height: 1.6; }
+
+      /* Pattern entries — print summary only (this is a ToC, not full content) */
+      .pattern-entry {
+        margin-bottom: 5pt;
+        border-radius: 2pt;
+        page-break-inside: avoid;
+      }
+      .pattern-entry-summary {
+        padding: 7pt 10pt;
+        cursor: default;
+        user-select: text;
+        display: flex;
+      }
+      .pattern-toggle { display: none; }
+      .pattern-badge { font-size: 8.5pt; padding: 1pt 6pt; }
+      .pattern-entry-name { font-size: 11pt; margin-bottom: 2pt; }
+      .pattern-entry-intent { font-size: 9.5pt; line-height: 1.5; }
+      .pattern-entry-aka { font-size: 8.5pt; }
+
+      /* Force pattern body hidden — ToC should show entries, not full text */
+      .pattern-entry-body { display: none !important; }
+
+      /* Preface block */
+      .preface-block { padding: 10pt 14pt; margin: 14pt 0 22pt; font-size: 10pt; }
+      .preface-label { font-size: 8.5pt; }
+
+      /* Pattern index table */
+      .pattern-index { font-size: 9.5pt; margin-top: 8pt; }
+      .pattern-index th {
+        background: var(--wspc-navy) !important;
+        color: #fff !important;
+        font-size: 8.5pt;
+        padding: 5pt 10pt;
+      }
+      .pattern-index td { padding: 5pt 10pt; }
+      .idx-badge { font-size: 8.5pt; }
+
+      /* Appendix entries */
+      .appendix-entry { padding: 8pt 10pt; margin-bottom: 6pt; page-break-inside: avoid; }
+      .appendix-label { font-size: 8.5pt; }
+      .appendix-title { font-size: 12pt; }
+      .appendix-body { font-size: 10pt; }
+
+      /* Footer */
+      .chapter-footer { margin-top: 24pt; padding-top: 10pt; font-size: 9pt; }
+      .sample-badge { font-size: 8pt; }
+
+      /* Page-break control */
+      .part-header, .section-header { page-break-after: avoid; }
+      p { orphans: 3; widows: 3; }
+      .chapter-entry, .pattern-entry,
+      .preface-block, .appendix-entry { page-break-inside: avoid; }
+    }
   </style>
   <link rel="stylesheet" href="mobile.css">
 </head>
@@ -190,14 +313,14 @@
     <span>Agentic Harness Engineering</span>
     <span>Nicholas McCarty</span>
     <span>World Scientific, 2026</span>
-    <span>~455 pages · 27 patterns</span>
+    <span>~497 pages · 30 patterns</span>
   </div>
 
   <!-- Jump nav -->
   <div class="jump-nav">
     <div class="jump-nav-label">Jump to section</div>
     <div class="jump-nav-links">
-      <a href="#preface">Preface</a>
+      <a href="#preface">Introduction</a>
       <a href="#part-i">Part I — Foundations</a>
       <a href="#section-a">A · Inference</a>
       <a href="#section-b">B · Context Engineering</a>
@@ -211,11 +334,11 @@
     </div>
   </div>
 
-  <!-- Preface -->
+  <!-- Introduction -->
   <div id="preface">
     <div class="preface-block">
-      <div class="preface-label">Preface <span style="font-weight:400;color:var(--text-secondary);">~5 pp.</span></div>
-      Why this book was written, who it is for, and how to use it. The preface situates the book against the current moment in AI tooling — a period in which foundation models have become commodities while the infrastructure surrounding them remains largely artisanal and undocumented. It describes the Upskilled harness as the running artifact throughout the text: every pattern in Part II is grounded in a real, publicly available codebase that readers can clone, instrument, and modify. It explains the two-part structure (narrative foundation, then pattern catalog), defines the notation used in pattern entries, and provides three suggested reading paths for different practitioner profiles.
+      <div class="preface-label">Introduction <span style="font-weight:400;color:var(--text-secondary);">~5 pp.</span></div>
+      Why this book was written, who it is for, and how to use it. The introduction situates the book against the current moment in AI tooling — a period in which foundation models have become commodities while the infrastructure surrounding them remains largely artisanal and undocumented. It describes the Upskilled harness as the running artifact throughout the text: every pattern in Part II is grounded in a real, publicly available codebase that readers can clone, instrument, and modify. It explains the two-part structure (narrative foundation, then pattern catalog), defines the notation used in pattern entries, and provides three suggested reading paths for different practitioner profiles.
     </div>
   </div>
 
@@ -269,7 +392,7 @@
     <div class="part-header" style="margin-top:56px;">
       <div class="part-eyebrow">Part II</div>
       <div class="part-title">The Pattern Catalog <span class="part-pages">~350 pp.</span></div>
-      <div class="part-desc">Twenty-seven patterns organized into seven sections. Each entry follows the standard structure: a one-line intent, an "also known as" field, a how-it-works narrative, a when-to-use section, a consequences table, implementation notes with code, and cross-references to related patterns. Expand any entry below to read the full summary.</div>
+      <div class="part-desc">Thirty patterns organized into seven sections. Each entry follows the standard structure: a one-line intent, an "also known as" field, a how-it-works narrative, a when-to-use section, a consequences table, implementation notes with code, and cross-references to related patterns. Expand any entry below to read the full summary.</div>
     </div>
 
     <!-- Section A -->
@@ -779,7 +902,7 @@
   <div id="pattern-index" style="margin-top:52px;">
     <div class="part-header">
       <div class="part-eyebrow">Pattern Index</div>
-      <div class="part-title">All 27 Patterns — Alphabetical</div>
+      <div class="part-title">All 30 Patterns — Alphabetical</div>
     </div>
     <table class="pattern-index">
       <thead>
@@ -819,7 +942,7 @@
         <tr><td>The Worktree Context</td><td><span class="idx-badge">D2</span></td><td>Orchestration</td></tr>
       </tbody>
     </table>
-    <p style="font-size:13px;color:var(--text-secondary);margin-top:10px;font-style:italic;">Estimated total: ~455 pages</p>
+    <p style="font-size:13px;color:var(--text-secondary);margin-top:10px;font-style:italic;">Estimated total: ~497 pages</p>
   </div>
 
   <div class="chapter-footer">

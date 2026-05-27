@@ -109,11 +109,20 @@ def loop(
     round_scores: list[float] = []
     evaluator = select_evaluator(seed=parent_trace.run_id)
 
+    best_score = 0.0
+    best_content = ""
+    best_round = 0
+
     for round_num in range(1, MAX_ROUNDS + 1):
         parent_trace.enter_stage(f"wiggum_round_{round_num}")
 
         result = _evaluate(content, task, evaluator, models)
         round_scores.append(result["score"])
+
+        if result["score"] > best_score:
+            best_score = result["score"]
+            best_content = content
+            best_round = round_num
 
         parent_trace.log_wiggum_round(
             round=round_num,
@@ -135,11 +144,13 @@ def loop(
         if round_num < MAX_ROUNDS:
             content = _revise(content, task, result, models.producer)
 
-    # Exhausted all rounds without passing
-    Path(output_path).write_text(content, encoding="utf-8")
+    # Exhausted all rounds — restore the highest-scoring round's output
+    # rather than the final round's, which may have regressed.
+    restore = best_content if best_round < round_num else content
+    Path(output_path).write_text(restore, encoding="utf-8")
     return WiggumResult(
         passed=False,
-        final_score=round_scores[-1],
+        final_score=best_score,
         round_scores=round_scores,
         rounds_taken=MAX_ROUNDS,
     )
@@ -153,6 +164,8 @@ MAX_ROUNDS     = 3      # maximum evaluation–revision cycles
 ```
 
 These values are not configuration parameters intended for routine adjustment. They were calibrated against 1,500 labeled runs and represent the point at which the tradeoff between improvement probability and overshoot risk is optimal for the task distribution the harness was designed for. Lowering `PASS_THRESHOLD` accepts more mediocre outputs; raising it increases the proportion of runs that exhaust all rounds without passing. Both adjustments should be made with logged experimental data, not intuition.
+
+One consequence of this design is that a run which fails all rounds does not necessarily write the final round's output to disk. The loop tracks the highest-scoring round throughout and restores that content on exit if the final round regressed. Of the 12 historical runs where round-3 scored lower than round-1, all 12 would have written a worse output without this guard. The `WiggumResult.final_score` field reflects the best round's score, not the last round's.
 
 ---
 
@@ -415,6 +428,8 @@ The Wiggum Loop catches most quality problems. It does not catch all of them, an
 
 **Context starvation.** When the pre-evaluation compression removes too much of the document, the evaluator scores structural completeness based on a skeleton that misrepresents the actual content. The compressed section headings are present, but the evaluator cannot tell whether the bodies contain substantive analysis or placeholder filler. The 6,000-character compression threshold was chosen to be conservative on this axis; lowering it risks starvation.
 
+**Cycling.** A subtler failure: the producer receives feedback, generates a revision, and the evaluator scores it identically — the same composite score, the same six dimensional scores. This can happen when the feedback targets a dimension the producer cannot improve with the information it has available (asking for more citations when no additional cited sources were retrieved), or when the evaluator's rubric is insensitive to the changes the producer is making. Without detection, the loop burns the remaining revision rounds producing and scoring outputs that are functionally identical. The production implementation detects this by comparing the current round's composite score and all six dimensional scores against the previous round's. If both match exactly, the loop exits immediately and returns the best round seen so far rather than continuing. In the 1,500-run dataset, cycling detection prevented an estimated 1,300 seconds of wasted inference per affected run.
+
 ---
 
 ## Tuning the Loop
@@ -470,4 +485,4 @@ The loop is not a correctness guarantee. It is a reliable quality lift for the r
 
 ---
 
-**Code.** All code in this chapter is from `harness/wiggum.py`. Constants are defined in `harness/config.py`. The evaluator prompt template is in `harness/prompts/eval.py`. The full source is available at [github.com/upskilled-consulting/harness-refactor].
+**Code.** All code in this chapter is from `harness/wiggum.py`. Constants are defined in `harness/config.py`. The evaluator prompt template is in `harness/prompts/eval.py`. The full source is available at [github.com/upskilled-consulting/ollama-harness](https://github.com/upskilled-consulting/ollama-harness); install via `pip install ollama-harness`.

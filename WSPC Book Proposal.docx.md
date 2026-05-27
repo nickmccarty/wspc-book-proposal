@@ -33,7 +33,15 @@ Upskilled Consulting
 
 **▼ Book description** (\>250 words)
 
-Data flywheels, agentic harness scaffolding best practices, memory, orchestration, security, evaluation loops, RL dataset rollout built in, preference steering, web search as a skill, information saturation (saturation gating), LaaJ, traces (computational, reasoning, etc.), observability/telemetry, tool permissions, large doc context, chunking, embeddings, vector DB indexing, failure taxonomy (failure modes; feedback loops), long-running tasks (i.e., autoresearch, /lit-review, etc.), leverage (low leverage tasks like email vs. high leverage tasks like autoresearch), context engineering strategies, Git worktrees as a state management tool during multi-agent orchestration, Ollama harness CLI, Python library, and ability to audit agentic runs using a DAG-driven GUI, inference shim as a unified LLM backend abstraction layer, MCP tools, ReAct vs Wiggum loops for eval, Ollama-constrained sequentialism vs vLLM/llama.cpp-powered parallelism 
+The quality of an agentic AI system's output is determined more by the software scaffolding surrounding the model than by the model itself, for any fixed task domain and capability tier. This book is a systematic treatment of that scaffolding — the pipeline layer practitioners call the *harness* — organized as a pattern catalog in the tradition of Fowler's *Patterns of Enterprise Application Architecture*.
+
+*Agentic Harness Engineering* presents thirty named patterns across seven sections: inference routing, context engineering, output verification, multi-agent orchestration, security, observability, and self-improvement. Each pattern was derived from a real failure mode observed in a production research-agent system, diagnosed against a 1,500-run logged dataset, and implemented in the open-source companion codebase (`github.com/upskilled-consulting/ollama-harness`, available via `pip install ollama-harness`). Where a pattern improves a measurable outcome — the Wiggum Loop raises mean output quality from 6.87 to 8.12 on a six-dimension rubric; the Worktree Context eliminates a class of silent output collision undetectable by the evaluation system — the before-and-after figures are reported from the run log, not estimated.
+
+The book is structured in two parts. Part I (four narrative chapters) establishes the vocabulary and failure taxonomy: what a harness is, why the infrastructure layer determines system behavior, how the 1,500-run experimental dataset was constructed, and a documented classification of the six failure classes that emerge when harness components are absent or misconfigured. Part II is the pattern catalog, each entry following a consistent structure — intent, also-known-as, how-it-works, applicability, consequences, working implementation code, and cross-references — so that practitioners can read it selectively against specific problems.
+
+The companion codebase runs entirely on local hardware (Ollama, vLLM, or llama.cpp; minimum 8 GB VRAM) with no external API keys required for core functionality. This is a design choice, not a constraint: the book's central claim is that harness design dominates model selection for a fixed capability tier, and that claim is only testable if the system is reproducible without dependency on a specific proprietary API.
+
+The intended audience is software engineers building or evaluating production agentic systems, researchers studying agentic pipeline failure modes, and technical leaders who need a systematic framework for assessing agentic infrastructure.
 
 **▼ Key selling points** (unique features, competitive advantages etc.)
 
@@ -53,14 +61,14 @@ None currently exist.
 
 **▼ Specifications**
 
-| Extent (est. no. of words or pages) | ► |     \~ 450 pgs. |
+| Extent (est. no. of words or pages) | ► |     \~ 497 pgs. |
 | :---- | ----- | :---- |
 |  |  |  |
 |   For specialized books: |  |  |
 | If colour required, est. no. of colour pages | **►** |      TBD; \~ 40 pgs. |
 | If large format required, please specify (e.g. A4) | **►** |      N/A |
 | If Proceedings volume, is it a print-ready (CRC) manuscript? | **►** |      N/A |
-| If supplementary material online, please describe | **►** |      GitHub code repository;              deployed web app via            AWS (budget permitting) |
+| If supplementary material online, please describe | **►** |      github.com/upskilled-consulting/ollama-harness (pip install ollama-harness); deployed web app via AWS (budget permitting) |
 
 **▼ Manuscript format**
 
@@ -87,7 +95,7 @@ If a textbook, what courses could the book be used for?
 
 ▼  Primary market
 
-E.g., CS329A (Self‑Improving AI Agents), CS324 (Advanced Topics in ML / Agentic systems when offered), CS331/CS347 (multi‑agent/robotics topics).
+CS329A (Self‑Improving AI Agents), CS324 (Advanced Topics in ML / Agentic systems when offered), CS331/CS347 (multi‑agent/robotics topics).
 
 ▼  Secondary market
 

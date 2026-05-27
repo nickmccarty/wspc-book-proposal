@@ -104,6 +104,113 @@
       .author-hero { grid-template-columns: 1fr; }
       .author-photo { width: 110px; height: 110px; }
     }
+
+    /* ── Print ─────────────────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 22mm 20mm 26mm 25mm;
+      }
+
+      .util-bar,
+      .site-nav,
+      .breadcrumb,
+      .author-links,
+      .back-link { display: none !important; }
+
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 10.5pt;
+        line-height: 1.65;
+        color: #000;
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page-wrap {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* Author hero */
+      .author-hero {
+        grid-template-columns: 120pt 1fr;
+        gap: 22pt;
+        margin-bottom: 26pt;
+        padding-bottom: 20pt;
+        page-break-inside: avoid;
+      }
+      .author-photo {
+        width: 110pt;
+        height: 110pt;
+        border-radius: 50%;
+      }
+      .author-eyebrow { font-size: 8.5pt; margin-bottom: 5pt; }
+      .author-name { font-size: 20pt; margin-bottom: 3pt; }
+      .author-title { font-size: 10.5pt; margin-bottom: 10pt; }
+      .author-bio-short { font-size: 10.5pt; line-height: 1.65; margin-bottom: 0; }
+
+      /* CV sections */
+      .cv-section { margin-bottom: 22pt; }
+      .cv-section-title {
+        font-size: 13.5pt;
+        padding-bottom: 5pt;
+        margin-bottom: 12pt;
+        page-break-after: avoid;
+      }
+
+      /* Experience entries */
+      .cv-entry { margin-bottom: 14pt; }
+      .cv-entry-role { font-size: 11pt; }
+      .cv-entry-org { font-size: 11pt; }
+      .cv-entry-dates { font-size: 9pt; }
+      .cv-entry-body { font-size: 10pt; line-height: 1.6; }
+      .cv-entry-body li { margin-bottom: 3pt; }
+      .cv-entry + .cv-entry { padding-top: 12pt; }
+
+      /* Publications */
+      .pub-entry {
+        padding: 9pt 12pt;
+        margin-bottom: 8pt;
+        page-break-inside: avoid;
+      }
+      .pub-title { font-size: 11pt; }
+      .pub-meta { font-size: 9pt; }
+
+      /* Skill tags */
+      .skill-group { margin-bottom: 9pt; }
+      .skill-group-label { font-size: 8.5pt; margin-bottom: 4pt; }
+      .skill-tag {
+        font-size: 9pt;
+        padding: 1pt 7pt;
+        background: #eef0f8 !important;
+      }
+
+      /* Reviewer table */
+      .reviewer-table { font-size: 9.5pt; }
+      .reviewer-table th {
+        background: var(--wspc-navy) !important;
+        color: #fff !important;
+        font-size: 8.5pt;
+        padding: 5pt 10pt;
+      }
+      .reviewer-table td { padding: 6pt 10pt; }
+
+      /* Course modules */
+      .module-list li { font-size: 10pt; padding: 4pt 0; }
+      .module-id { font-size: 9pt; }
+
+      /* Footer */
+      .chapter-footer { margin-top: 24pt; padding-top: 10pt; font-size: 9pt; }
+
+      /* Page-break control */
+      .cv-section-title { page-break-after: avoid; }
+      p { orphans: 3; widows: 3; }
+      .author-hero, .pub-entry,
+      .cv-entry, .appendix-entry { page-break-inside: avoid; }
+    }
   </style>
   <link rel="stylesheet" href="mobile.css">
 </head>
@@ -156,7 +263,7 @@
     <div>
       <div class="author-eyebrow">About the Author</div>
       <div class="author-name">Nicholas McCarty</div>
-      <div class="author-title">Principal Consultant · Upskilled Consulting · Sacramento, CA</div>
+      <div class="author-title">Principal Consultant · Upskilled Consulting · Palm Desert, CA</div>
       <p class="author-bio-short">
         Machine learning and data science practitioner with experience in computer vision, NLP, recommender systems, and foundation-model workflows. Designer and primary maintainer of the open-source Upskilled harness — a full-stack Python and TypeScript scaffolding framework for autonomous research agents — and creator of the <em>Harness Engineering for AI Agents</em> course series. His practice focuses on the infrastructure layer of AI systems: the pipeline scaffolding, evaluation loops, memory architectures, and observability tooling that determine whether a capable model delivers capable results.
       </p>
@@ -195,40 +302,7 @@
     </div>
   </div>
 
-  <!-- Open-Source Projects -->
-  <div class="cv-section">
-    <div class="cv-section-title">Open-Source Projects</div>
 
-    <div class="cv-entry">
-      <div class="cv-entry-header">
-        <span class="cv-entry-org">Upskilled Harness</span>
-        <span class="cv-entry-dates">2024 – Present</span>
-      </div>
-      <div class="cv-entry-body">
-        <p>Author and primary maintainer of a full-stack agentic harness implementing 11 orchestrated subsystems — from CLI entry point through multi-model inference, novelty-gated research, evaluation loops, persistent memory, and structured observability. Written in Python and TypeScript. Runs entirely on local hardware; no external API keys required. Empirically validated over 1,500 logged production runs.</p>
-        <ul>
-          <li><code>harness/agent.py</code> — Core research agent: plan → search → synthesize → evaluate → persist</li>
-          <li><code>harness/wiggum.py</code> — Producer–evaluator separation loop with six-dimension rubric</li>
-          <li><code>harness/orchestrator.py</code> — DAG-based multi-subtask decomposition with parallel execution and Kahn's cycle detection</li>
-          <li><code>harness/inference.py</code> — Unified inference shim routing to Ollama, vLLM, and llama.cpp</li>
-          <li><code>harness/memory.py</code> — Dual-backend memory store (ChromaDB + SQLite FTS5) with novelty gating</li>
-          <li><code>harness/mcp_server.py</code> — Model Context Protocol server exposing harness capabilities as tools</li>
-          <li><code>dashboard/</code> — React 18 / TypeScript live monitoring dashboard with WebSocket run streaming</li>
-          <li><code>harness/skills/</code> — Skills ecosystem: <code>/lit-review</code>, <code>/browser</code>, <code>/email</code>, <code>/github</code>, <code>/deck</code></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="cv-entry">
-      <div class="cv-entry-header">
-        <span class="cv-entry-org">Upskilled Platform</span>
-        <span class="cv-entry-dates">2023 – Present</span>
-      </div>
-      <div class="cv-entry-body">
-        <p>Author of the Upskilled educational platform hosting free ML and AI courses for practitioners. Courses published include: <em>Harness Engineering for AI Agents</em> (5 modules, ~12 hours); mathematics prerequisites in linear algebra, matrix algebra, calculus, and probability; and domain supplements on neural network architectures, activation functions, loss functions, optimizers, regularization, and normalization.</p>
-      </div>
-    </div>
-  </div>
 
   <!-- Teaching -->
   <div class="cv-section">
@@ -237,10 +311,10 @@
     <div class="cv-entry">
       <div class="cv-entry-header">
         <span><span class="cv-entry-role">Course Author</span> &nbsp;·&nbsp; <span class="cv-entry-org">Harness Engineering for AI Agents</span></span>
-        <span class="cv-entry-dates">2025</span>
+        <span class="cv-entry-dates">2026</span>
       </div>
       <div class="cv-entry-body">
-        <p>Five-module intermediate course covering pipeline architecture, context engineering and memory, verification and failure modes, production systems, and self-improvement. Published at upskilled.consulting/harness-engineering.</p>
+        <p>Five-module intermediate course covering pipeline architecture, context engineering and memory, verification and failure modes, production systems, and self-improvement. Published at <a href="https://upskilled.consulting/courses" target="_blank">upskilled.consulting/courses</a>.</p>
         <ul class="module-list">
           <li><span class="module-id">Module 1</span> The Harness Thesis — pipeline architecture, experimental methodology, model role separation</li>
           <li><span class="module-id">Module 2</span> Context Engineering &amp; Memory — planning, dual-search, saturation gating, persistent memory</li>

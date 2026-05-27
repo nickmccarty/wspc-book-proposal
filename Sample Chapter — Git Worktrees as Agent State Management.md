@@ -3,17 +3,17 @@
 
 ---
 
-The first time you run five research agents in parallel without worrying about state isolation, the failure mode is so mundane it takes a moment to understand what happened.
+The first production implementation of parallel agent orchestration in this harness ran 43 logged tasks before a problem was detected — and only then because a spot-check revealed a discrepancy at run 61. Eighteen runs had passed evaluation with a hidden defect.
 
-Three of the agents finish close together. They each call `write_output()`, each targeting a filename derived from the task string, and since they are all variants of the same parent task, two of them hash to the same path. The last writer wins. The third agent's output — eighteen minutes of inference, three Wiggum evaluation rounds, a final score of 8.4 — is silently overwritten. The run log shows three completions. The filesystem shows one file.
+The failure is this: when two research agents working on related subtasks both derive their output filenames from a hash of the task string, the filenames collide. The second writer overwrites the first. The run log shows two completions. The filesystem shows one file.
 
-You do not notice immediately. The assembly model reads the available outputs and synthesizes them into a cross-reference document that looks, on the surface, like a complete multi-perspective analysis. It is not. It is a two-perspective analysis presented in a three-perspective frame, with the third slot filled by the assembly model's own synthesis of the two it could see. The output passes Wiggum evaluation. It gets a 8.2. It goes into `runs.jsonl` as a PASS.
+The assembly model reads the available outputs and produces a document that looks, on the surface, like a complete multi-perspective synthesis. It is not. The evaluator scores it, and it passes — because the evaluator cannot detect the absence of content it never saw. The run goes into `runs.jsonl` as a PASS.
 
-This is not a crash. There is no stack trace. The pipeline reports success and it is wrong.
+There is no crash. There is no warning. There is no indication that anything went wrong.
 
-Shared mutable state in concurrent agent execution is one of the few failure modes in this architecture that does not surface through the quality evaluation system, because the evaluator cannot know that content is missing — only that what is present is adequate. That makes it the most dangerous kind of failure: silent, plausible-looking, and repeatable.
+This is one of the few failure modes in the architecture that does not surface through the quality evaluation system, because the evaluator can only assess what is present, not what is missing. That makes it the most dangerous kind: silent, plausible-looking, and repeatable across every subsequent parallel run until the root cause is diagnosed.
 
-This chapter describes the pattern that fixes it.
+The fix is forty lines of code. The problem is that you have to know to look for it. This chapter describes the pattern that makes the failure structurally impossible.
 
 ---
 

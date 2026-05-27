@@ -51,7 +51,7 @@ The book is in two parts.
 
 **Part I: The System** is four narrative chapters that establish the vocabulary and conceptual framework. Chapter 1 introduces the central claim of the book: that the quality of an agentic system's output is determined more by the harness than by the model, for any fixed task domain and model capability tier. Chapter 2 traces a single research task through the full pipeline — from entry point through planning, agent loop, evaluation, memory update, and telemetry — to make the system concrete before we begin decomposing it. Chapter 3 describes the experimental methodology used to generate the 1,500-run dataset that underpins the pattern validations: the six-dimension quality rubric, the evaluator pool rotation, the failure taxonomy. Chapter 4 is the failure taxonomy itself — six classes of failure derived from the run log, with representative records, frequency distributions, and pointers to the patterns that address each class.
 
-**Part II: The Pattern Catalog** is twenty-seven patterns organized into seven sections:
+**Part II: The Pattern Catalog** is thirty patterns organized into seven sections:
 
 - **Section A — Inference** covers the substrate: the inference shim that routes calls to Ollama, vLLM, or llama.cpp through a single `chat()` interface; the model role separation that prevents the same model from serving as both producer and evaluator; the evaluator pool rotation that converts per-model scoring bias into diagnosable variance.
 
@@ -89,7 +89,7 @@ The primary audience is the software engineer who has already shipped something 
 
 The secondary audience is the researcher or architect who is designing an agentic system and wants to understand the failure modes in advance. Part I's failure taxonomy and the when-not-to-use sections of the pattern entries are written for this reader.
 
-The tertiary audience is the technical leader who needs to evaluate an existing agentic implementation. The pattern catalog gives you a checklist: here are the twenty-seven things a production harness should address, here is what to look for in the code, and here is what failure looks like when each is absent.
+The tertiary audience is the technical leader who needs to evaluate an existing agentic implementation. The pattern catalog gives you a checklist: here are the thirty things a production harness should address, here is what to look for in the code, and here is what failure looks like when each is absent.
 
 ---
 
@@ -115,4 +115,4 @@ The patterns are waiting for the failures. This book is the map.
 
 ---
 
-**Code.** The companion codebase is available at the repository linked in Appendix A. **Running the examples** requires Python 3.11+, Git, and at least 8 GB of VRAM for a single-model deployment. Full environment setup is documented in `SETUP.md`. **The run log** is at `data/runs.jsonl`. The Chrome Trace Events files are in `data/traces/`.
+**Code.** The companion codebase is available at [github.com/upskilled-consulting/ollama-harness](https://github.com/upskilled-consulting/ollama-harness); install via `pip install ollama-harness`. **Running the examples** requires Python 3.11+, Git, and at least 8 GB of VRAM for a single-model deployment. Full environment setup is documented in `SETUP.md`. **The run log** is at `data/runs.jsonl`. The Chrome Trace Events files are in `data/traces/`.

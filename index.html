@@ -1259,12 +1259,12 @@
 
     <div class="kpi-row">
       <div class="kpi-item">
-        <div class="kpi-value">~455</div>
+        <div class="kpi-value">~497</div>
         <div class="kpi-label">Pages</div>
       </div>
       <div class="kpi-divider"></div>
       <div class="kpi-item">
-        <div class="kpi-value">27</div>
+        <div class="kpi-value">30</div>
         <div class="kpi-label">Patterns</div>
       </div>
       <div class="kpi-divider"></div>
@@ -1311,7 +1311,7 @@
       </div>
       <div class="meta-cell">
         <div class="meta-label">Open-Source Companion</div>
-        <div class="meta-value">GitHub repository</div>
+        <div class="meta-value"><a href="https://github.com/upskilled-consulting/ollama-harness" target="_blank" style="color:inherit">github.com/upskilled-consulting/ollama-harness</a></div>
       </div>
     </div>
   </div>
@@ -1370,7 +1370,7 @@
         </p>
 
         <p class="body-text">
-          <strong>Agentic Harness Engineering</strong> introduces 27 named architectural patterns organized into seven sections — Inference, Context Engineering, Verification, Orchestration, Security, Observability, and Self-Improvement — each following a canonical structure: intent, motivation, how it works, consequences, and implementation notes with working code. The patterns are drawn from and grounded in the Upskilled harness, an open-source Python and TypeScript pipeline with over 1,500 logged experimental runs.
+          <strong>Agentic Harness Engineering</strong> introduces 30 named architectural patterns organized into seven sections — Inference, Context Engineering, Verification, Orchestration, Security, Observability, and Self-Improvement — each following a canonical structure: intent, motivation, how it works, consequences, and implementation notes with working code. The patterns are drawn from and grounded in the Upskilled harness, an open-source Python and TypeScript pipeline with over 1,500 logged experimental runs.
         </p>
 
         <p class="body-text">
@@ -1504,7 +1504,7 @@
 
     <div>
       <div class="section-label">Part II — The Pattern Catalog</div>
-      <div class="catalog-section-desc">Twenty-seven named patterns across seven sections. Each entry: intent · also known as · how it works · consequences · implementation with code · related patterns.</div>
+      <div class="catalog-section-desc">Thirty named patterns across seven sections. Each entry: intent · also known as · how it works · consequences · implementation with code · related patterns.</div>
 
       <table class="spec-table" style="margin-bottom: 8px;">
         <thead>
@@ -1558,7 +1558,7 @@
 
     <div class="catalog-intro">
       <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.7;">
-        Each of the 27 patterns follows the canonical Fowler-style structure: a single-sentence intent, an "also known as" field, a how-it-works narrative with interaction diagrams, when-to-use and when-not-to-use guidance, a consequences table of benefits and tradeoffs, and implementation notes with working code from the companion repository.
+        Each of the 30 patterns follows the canonical Fowler-style structure: a single-sentence intent, an "also known as" field, a how-it-works narrative with interaction diagrams, when-to-use and when-not-to-use guidance, a consequences table of benefits and tradeoffs, and implementation notes with working code from the companion repository.
       </p>
     </div>
 
@@ -1698,12 +1698,12 @@
 
       <!-- Opening narrative -->
       <div class="chapter-opening">
-        <p>The first time you run five research agents in parallel without worrying about state isolation, the failure mode is so mundane it takes a moment to understand what happened.</p>
-        <p>Three of the agents finish close together. They each call <code>write_output()</code>, each targeting a filename derived from the task string, and since they are all variants of the same parent task, two of them hash to the same path. The last writer wins. The third agent's output — eighteen minutes of inference, three Wiggum evaluation rounds, a final score of 8.4 — is silently overwritten. The run log shows three completions. The filesystem shows one file.</p>
-        <p>You do not notice immediately. The assembly model reads the available outputs and synthesizes them into a cross-reference document that looks, on the surface, like a complete multi-perspective analysis. It is not. It is a two-perspective analysis presented in a three-perspective frame, with the third slot filled by the assembly model's own synthesis of the two it could see. The output passes Wiggum evaluation. It gets a 8.2. It goes into <code>runs.jsonl</code> as a PASS.</p>
-        <p>This is not a crash. There is no stack trace. The pipeline reports success and it is wrong.</p>
-        <p>Shared mutable state in concurrent agent execution is one of the few failure modes in this architecture that does not surface through the quality evaluation system, because the evaluator cannot know that content is missing — only that what is present is adequate. That makes it the most dangerous kind of failure: silent, plausible-looking, and repeatable.</p>
-        <p>This chapter describes the pattern that fixes it.</p>
+        <p>The first production implementation of parallel agent orchestration in this harness ran 43 logged tasks before a problem was detected — and only then because a spot-check revealed a discrepancy at run 61. Eighteen runs had passed evaluation with a hidden defect.</p>
+        <p>The failure is this: when two research agents working on related subtasks both derive their output filenames from a hash of the task string, the filenames collide. The second writer overwrites the first. The run log shows two completions. The filesystem shows one file.</p>
+        <p>The assembly model reads the available outputs and produces a document that looks, on the surface, like a complete multi-perspective synthesis. It is not. The evaluator scores it, and it passes — because the evaluator cannot detect the absence of content it never saw. The run goes into <code>runs.jsonl</code> as a PASS.</p>
+        <p>There is no crash. There is no warning. There is no indication that anything went wrong.</p>
+        <p>This is one of the few failure modes in the architecture that does not surface through the quality evaluation system, because the evaluator can only assess what is present, not what is missing. That makes it the most dangerous kind: silent, plausible-looking, and repeatable across every subsequent parallel run until the root cause is diagnosed.</p>
+        <p>The fix is forty lines of code. The problem is that you have to know to look for it. This chapter describes the pattern that makes the failure structurally impossible.</p>
       </div>
 
       <hr class="chapter-rule">
@@ -2151,7 +2151,7 @@ git worktree prune</pre>
       <img class="author-avatar" src="headshot.png" alt="Nicholas McCarty">
       <div class="author-info">
         <div class="author-name">Nicholas McCarty</div>
-        <div class="author-title-line">Principal Consultant · Upskilled Consulting · Sacramento, CA</div>
+        <div class="author-title-line">Principal Consultant · Upskilled Consulting · Palm Desert, CA</div>
         <p class="author-bio">
           Nicholas McCarty designs and deploys production agentic systems for research-intensive organizations. He is the architect of the open-source Upskilled harness — a full-stack Python and TypeScript scaffolding framework for autonomous research agents running on local hardware — and the creator of the <em>Harness Engineering for AI Agents</em> course series. His practice focuses on the infrastructure layer of AI systems: pipeline scaffolding, evaluation loop design, retrieval-augmented generation architectures, and local inference infrastructure. The patterns in this book were developed and empirically validated over 1,500 logged production runs of the companion harness.
         </p>
