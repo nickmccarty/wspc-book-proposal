@@ -394,12 +394,22 @@
           .attr('opacity', inFail ? 0.85 : 0.55);
       }
 
-      // ── Evaluator "PASS" label centered above failure zone ─────
-      // White backing rect prevents leader-line bleed-through at y=70
+      // ── Leader lines drawn first so backing rect renders on top ──
       const fzMid = (xS(FAIL_S) + xS(FAIL_E)) / 2;
-      svg.append('rect').attr('x', fzMid - 78).attr('y', 57)
-        .attr('width', 156).attr('height', 16)
-        .attr('fill', '#f7f8fc').attr('opacity', 0.9);
+      const x43 = xS(FAIL_S);
+      const x61 = xS(FAIL_E);
+
+      svg.append('line').attr('x1', x43).attr('y1', trackY - 10)
+        .attr('x2', x43).attr('y2', 44)
+        .attr('stroke', RED).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+      svg.append('line').attr('x1', x61).attr('y1', trackY - 10)
+        .attr('x2', x61).attr('y2', 44)
+        .attr('stroke', GOLD).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
+
+      // ── Evaluator "PASS" label — backing rect wide enough to cover both leader lines
+      svg.append('rect').attr('x', fzMid - 85).attr('y', 55)
+        .attr('width', 170).attr('height', 18)
+        .attr('fill', '#f7f8fc').attr('opacity', 0.95);
       svg.append('text').attr('x', fzMid).attr('y', 70)
         .attr('text-anchor', 'middle').attr('font-size', 10)
         .attr('font-weight', '700').attr('fill', RED).attr('letter-spacing', '0.06em')
@@ -416,11 +426,6 @@
         .attr('x2', xS(FAIL_E)).attr('y2', bY - 4).attr('stroke', RED).attr('stroke-width', 1).attr('opacity', 0.5);
 
       // ── Annotation: run 43 ──────────────────────────────────────
-      // Leader runs from trackY-10 (100) up to y=44; callout text at y=16/28/40
-      const x43 = xS(FAIL_S);
-      svg.append('line').attr('x1', x43).attr('y1', trackY - 10)
-        .attr('x2', x43).attr('y2', 44)
-        .attr('stroke', RED).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
       svg.append('text').attr('x', x43 - 3).attr('y', 16)
         .attr('text-anchor', 'end').attr('font-size', 10).attr('fill', RED).attr('font-weight', '600')
         .text('run 43');
@@ -432,10 +437,6 @@
         .text('first occurs');
 
       // ── Annotation: run 61 ──────────────────────────────────────
-      const x61 = xS(FAIL_E);
-      svg.append('line').attr('x1', x61).attr('y1', trackY - 10)
-        .attr('x2', x61).attr('y2', 44)
-        .attr('stroke', GOLD).attr('stroke-width', 1).attr('stroke-dasharray', '3,2');
       svg.append('text').attr('x', x61 + 4).attr('y', 16)
         .attr('text-anchor', 'start').attr('font-size', 10).attr('fill', GOLD).attr('font-weight', '600')
         .text('run 61');

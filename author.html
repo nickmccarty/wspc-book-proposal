@@ -189,14 +189,14 @@
       }
 
       /* Reviewer table */
-      .reviewer-table { font-size: 9.5pt; }
+      .reviewer-table { font-size: 9.5pt; table-layout: fixed; width: 100%; }
       .reviewer-table th {
         background: var(--wspc-navy) !important;
         color: #fff !important;
         font-size: 8.5pt;
         padding: 5pt 10pt;
       }
-      .reviewer-table td { padding: 6pt 10pt; }
+      .reviewer-table td { padding: 6pt 10pt; word-break: break-all; overflow-wrap: break-word; }
 
       /* Course modules */
       .module-list li { font-size: 10pt; padding: 4pt 0; }

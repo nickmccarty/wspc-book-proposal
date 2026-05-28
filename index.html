@@ -1929,6 +1929,8 @@ git worktree prune</pre>
         });
 
         const wtBoxX = TL_X + TL_W + 10, wtBoxW = 54, wtCX = wtBoxX + wtBoxW / 2;
+
+        // Pass 1: tracks and bars only
         lanes.forEach((lane, i) => {
           const ly = TL_Y + i * lu;
           const ex = xS(lane.end);
@@ -1950,14 +1952,6 @@ git worktree prune</pre>
               .attr('x2', ex).attr('y2', ly + lH)
               .attr('stroke', lane.color).attr('stroke-width', 2);
           }
-          svg.append('rect').attr('x', wtBoxX).attr('y', ly + 7)
-            .attr('width', wtBoxW).attr('height', lH - 14).attr('rx', 2)
-            .attr('fill', WHITE).attr('stroke', lane.dim ? BORDER : lane.color)
-            .attr('stroke-width', lane.dim ? 1 : 1.5);
-          svg.append('text').attr('x', wtCX).attr('y', ly + lH/2 + 4)
-            .attr('text-anchor', 'middle').attr('font-size', 9)
-            .attr('fill', lane.dim ? LGRAY : lane.color).attr('font-weight', '600')
-            .text('wt/' + lane.id.toLowerCase());
         });
 
         svg.append('text').attr('x', wtCX).attr('y', TL_Y - 8)
@@ -2044,6 +2038,19 @@ git worktree prune</pre>
         svg.append('line').attr('x1', assX).attr('y1', trunkBotY)
           .attr('x2', assX).attr('y2', assY)
           .attr('stroke', LGRAY).attr('stroke-width', 1).attr('marker-end', 'url(#idx-arr-gray)');
+
+        // Pass 2: worktree badge boxes on top of assembly lines
+        lanes.forEach((lane, i) => {
+          const ly = TL_Y + i * lu;
+          svg.append('rect').attr('x', wtBoxX).attr('y', ly + 7)
+            .attr('width', wtBoxW).attr('height', lH - 14).attr('rx', 2)
+            .attr('fill', WHITE).attr('stroke', lane.dim ? BORDER : lane.color)
+            .attr('stroke-width', lane.dim ? 1 : 1.5);
+          svg.append('text').attr('x', wtCX).attr('y', ly + lH/2 + 4)
+            .attr('text-anchor', 'middle').attr('font-size', 9)
+            .attr('fill', lane.dim ? LGRAY : lane.color).attr('font-weight', '600')
+            .text('wt/' + lane.id.toLowerCase());
+        });
 
         const aW = 188, aH = 40;
         svg.append('rect').attr('x', assX - aW/2).attr('y', assY)
