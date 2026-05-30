@@ -70,4 +70,4 @@ This book's contribution is what happens *inside* the loop: the harness patterns
 
 ## Contact
 
-**Nicholas McCarty** · nickmccarty0@gmail.com · [Upskilled Consulting](https://upskilled.consulting)
+**Nicholas McCarty** · nick@upskilled.consulting · [Upskilled Consulting](https://upskilled.consulting)
